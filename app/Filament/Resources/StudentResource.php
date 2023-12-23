@@ -74,7 +74,12 @@ class StudentResource extends Resource
                             ->password()->dehydrated(false)
     
                         ]
-                    )
+                    )->columns(2),
+                    Select::make('status')->label('وضعیت')
+                    ->required()->options([
+                        0 => 'غیر فعال',
+                        1 => 'فعال'
+                    ])
                 ]),
                 Section::make('')->label('اطلاعات دانش آموز')
                 ->schema(

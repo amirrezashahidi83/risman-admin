@@ -61,7 +61,6 @@ class CounselorResource extends Resource
                             ->password()->confirmed()
                             ->dehydrated(
                                 function($livewire){
-                                    dd($livewire->data);
                                     return strlen($livewire->data['user']['password']) != 0;
                                 }
                             )
@@ -72,7 +71,13 @@ class CounselorResource extends Resource
                             ->password()->dehydrated(false)
     
                         ]
-                    )
+                    )->columns(2),
+                    Select::make('status')->label('وضعیت')
+                    ->required()->options([
+                        0 => 'غیر فعال',
+                        1 => 'فعال'
+                    ])
+
                 ]),
                 Section::make('اطلاعات مشاور')->label('')
                 ->schema([
