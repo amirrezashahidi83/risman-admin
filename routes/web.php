@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,13 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/update', function (Request $request) {
+	Route::post('/update', function (Request $request) {
     $postData = $request->all();
     $newRequest = Request::create('/livewire/update', 'POST', $postData);
     $response = app()->handle($newRequest);
     return $response;
 });
-
 Route::get('/', function () {
     return view('welcome');
 });
