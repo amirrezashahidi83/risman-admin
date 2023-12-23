@@ -61,7 +61,6 @@ class CounselorResource extends Resource
                             ->password()->confirmed()
                             ->dehydrated(
                                 function($livewire){
-                                    dd($livewire->data);
                                     return strlen($livewire->data['user']['password']) != 0;
                                 }
                             )
