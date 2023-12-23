@@ -49,7 +49,8 @@ class StudentResource extends Resource
                     Grid::make('')->schema(
                         [
                             TextInput::make('name')->label('نام و نام خانوادگی')->required(),
-                            TextInput::make('phoneNumber')->label('شماره تلفن')->required(),
+                            TextInput::make('phoneNumber')->label('شماره تلفن')->required()
+                            ->unique(ignoreRecord: true),
                         ]
                     )->columns(2),
 

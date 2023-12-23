@@ -26,8 +26,10 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Forms\Components\Section;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Pages\Page;
 use Filament\Forms\Components\Grid;
+use Illuminate\Support\Str;
 use Hash;
 class CounselorResource extends Resource
 {
@@ -46,7 +48,8 @@ class CounselorResource extends Resource
                     Grid::make('')->schema(
                         [
                             TextInput::make('name')->label('نام و نام خانوادگی')->required(),
-                            TextInput::make('phoneNumber')->label('شماره تلفن')->required(),
+                            TextInput::make('phoneNumber')->label('شماره تلفن')->required()
+                            ->unique(column: 'phoneNumber',ignoreRecord: true),
                         ]
                     )->columns(2),
 
@@ -81,7 +84,11 @@ class CounselorResource extends Resource
                 ]),
                 Section::make('اطلاعات مشاور')->label('')
                 ->schema([
-                    TextInput::make('code')->label('کد مشاوره'),
+                    Grid::make('')->schema([
+                    TextInput::make('code')->label('کد مشاوره')->readonly(fn (Page $livewire) => $livewire instanceof EditRecord)
+                    ->afterStateHydrated(function (TextInput $component,$state) {
+                        $component->state(! $state ? Str::random(8) : $state);
+                    })->unique(column: 'code',ignoreRecord: true),
                     Select::make('status')->label('پیام اتوماتیک')->options([
                         0 => 'غیر فعال',
                         1 => 'فعال'
@@ -90,6 +97,7 @@ class CounselorResource extends Resource
                         0 => 'غیر فعال',
                         1 => 'فعال'
                     ]),
+                    ])->columns(3),
                 ])
         ]);
     }

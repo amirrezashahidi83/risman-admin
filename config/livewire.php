@@ -42,18 +42,6 @@ return [
 
     /*
     |---------------------------------------------------------------------------
-    | Lazy Loading Placeholder
-    |---------------------------------------------------------------------------
-    | Livewire allows you to lazy load components that would otherwise slow down
-    | the initial page load. Every component can have a custom placeholder or
-    | you can define the default placeholder view for all components below.
-    |
-    */
-
-    'lazy_placeholder' => null,
-
-    /*
-    |---------------------------------------------------------------------------
     | Temporary File Uploads
     |---------------------------------------------------------------------------
     |
@@ -128,7 +116,6 @@ return [
 
     'navigate' => [
         'show_progress_bar' => true,
-        'progress_bar_color' => '#2299dd',
     ],
 
     /*
@@ -156,6 +143,5 @@ return [
     */
 
     'pagination_theme' => 'tailwind',
-    'asset_url' => '/admin/livewire.js'    
+    'asset_url' => '/livewire.js'
 ];
-
