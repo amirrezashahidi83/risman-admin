@@ -110,7 +110,6 @@ class CounselorResource extends Resource
                     ->searchable()->sortable(),
                     TextColumn::make('user.phoneNumber')->label('شماره تلفن')
                     ->searchable()->sortable(),
-                    TextColumn::make('user.password')->label('پسورد'),
                     TextColumn::make('user.balance')->label('موجودی'),
                     TextColumn::make('user.score')->label('امتیاز'),
                     ImageColumn::make('user.profilePic')->label('عکس پروفایل'),

@@ -70,8 +70,6 @@ class LessonResource extends Resource
             ->columns([
                 TextColumn::make('title')->label('نام درس')
                 ->sortable()->searchable(),
-                TextColumn::make('topics')->label('مباحث')
-                ->sortable()->searchable(),
                 TextColumn::make('grade')->label('پایه')->sortable(),
                 TextColumn::make('major')->label('رشته')->sortable(),
                 TextColumn::make('type')->label('عمومی یا تخصصی')->sortable(),
