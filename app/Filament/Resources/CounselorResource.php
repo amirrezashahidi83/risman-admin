@@ -62,6 +62,11 @@ class CounselorResource extends Resource
                         [
                             TextInput::make('password')->label('رمز عبور')
                             ->password()->confirmed()
+                            ->afterStateHydrated(function (TextInput $component,$state) {
+                                if(fn (Page $livewire) => $livewire instanceof EditRecord){
+                                    $component->state("");
+                                }
+                            })
                             ->dehydrated(
                                 function($livewire){
                                     return strlen($livewire->data['user']['password']) != 0;
