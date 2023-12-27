@@ -31,6 +31,8 @@ use Filament\Resources\Pages\Page;
 use Filament\Forms\Components\Grid;
 use Illuminate\Support\Str;
 use Hash;
+use Illuminate\Database\Eloquent\Model;
+
 class CounselorResource extends Resource
 {
     protected static ?string $model = Counselor::class;
