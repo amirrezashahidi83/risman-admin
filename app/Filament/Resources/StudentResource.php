@@ -32,6 +32,7 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\FileUpload;
 use Filament\Resources\Pages\Page;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Forms\Components\Hidden;
 use Hash;
 class StudentResource extends Resource
 {
@@ -85,6 +86,7 @@ class StudentResource extends Resource
                 Section::make('')->label('اطلاعات دانش آموز')
                 ->schema(
                     [
+                    Hidden::make('goal')->default('هدف شما'),
                     Select::make('major')->label('رشته')
                     ->options(MajorEnum::class),
                     Select::make('grade')->label('پایه')
@@ -92,7 +94,7 @@ class StudentResource extends Resource
                     Select::make('status')->label('وضعیت')->options([
                         0 => 'غیر فعال',
                         1 => 'فعال'
-                    ]),
+                    ])->required(),
                     TextInput::make('school')->label('مدرسه'),
                     Select::make('counselor_id')->label('کد مشاور')
                     ->
