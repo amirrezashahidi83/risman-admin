@@ -26,6 +26,7 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Forms\Components\Section;
+use Filament\Tables\Actions\ReplicateAction;
 use App\Models\Enums\MajorEnum;
 use App\Models\Enums\GradeEnum;
 use Filament\Forms\Components\Grid;
@@ -33,6 +34,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Resources\Pages\Page;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Forms\Components\Hidden;
+use Illuminate\Support\Str;
 use Hash;
 class StudentResource extends Resource
 {
@@ -132,9 +134,17 @@ class StudentResource extends Resource
                 action(function($record): void{
                     $user_id = $record['user']['id'];
                     $record->delete();
-                    Schedule::where('user_id',$user_id)->first()->delete();
-                    User::where('id',$user_id)->first()->delete();
+                    $record->user->delete();
                 })->requiresConfirmation(),
+                ReplicateAction::make()
+                ->after(function (Model $replica): void {
+                    $replica->user->password = Hash::make('123456789');
+                    $replica->user->name = "اکانت تست";
+                    $replica->user->phoneNumber = Str::random(8);
+                    $replica->user->save();
+                    $replica->save();
+                })
+
             ])
             ->bulkActions([
                 BulkAction::make('delete')->

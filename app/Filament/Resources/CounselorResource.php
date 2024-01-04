@@ -23,6 +23,8 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Checkbox;
 use Filament\Tables\Actions\Action;
+use Filament\Actions\CreateAction;
+use Filament\Tables\Actions\ReplicateAction;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Forms\Components\Section;
 use Filament\Resources\Pages\CreateRecord;
@@ -137,6 +139,14 @@ class CounselorResource extends Resource
                     $record->delete();
                     User::where('id',$user_id)->first()->delete();
                 })->requiresConfirmation(),
+                ReplicateAction::make()
+                ->after(function (Model $replica): void {
+                    $replica->user->password = Hash::make('123456789');
+                    $replica->user->name = "اکانت تست";
+                    $replica->user->phoneNumber = Str::random(8);
+                    $replica->user->save();
+                    $replica->save();
+                })
             ])
             ->bulkActions([
                 BulkAction::make('delete')->

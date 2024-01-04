@@ -26,6 +26,8 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\FileUpload;
 use Filament\Resources\Pages\Page;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Tables\Actions\ReplicateAction;
+use Illuminate\Support\Str;
 use Hash;
 
 class StudentsRelationManager extends RelationManager
@@ -128,6 +130,14 @@ class StudentsRelationManager extends RelationManager
                     Schedule::where('user_id',$user_id)->first()->delete();
                     User::where('id',$user_id)->first()->delete();
                 })->requiresConfirmation(),
+                ReplicateAction::make()
+                ->beforeReplicaSaved(function (Model $replica): void {
+                    $replica->user->password = Hash::make('123456789');
+                    $replica->user->name = "اکانت تست";
+                    $replica->user->phoneNumber = Str::random(8);
+
+                })
+
             ])
             ->bulkActions([
                 BulkAction::make('delete')->
