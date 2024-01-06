@@ -141,7 +141,7 @@ class StudentResource extends Resource
                     $newUser = $replica->user->replicate();
                     $newUser->password = Hash::make('123456789');
                     $newUser->name = "اکانت تست";
-                    $newUser->phoneNumber = strval(mt_rand(10000000000,9999999999));
+                    $newUser->phoneNumber = strval(mt_rand(10000000000,99999999999));
                     $newUser->save();
                     $replica->user()->associate($newUser);
                     $replica->save();
