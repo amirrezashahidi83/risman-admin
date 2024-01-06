@@ -141,10 +141,13 @@ class CounselorResource extends Resource
                 })->requiresConfirmation(),
                 ReplicateAction::make()
                 ->after(function (Model $replica): void {
-                    $replica->user->password = Hash::make('123456789');
-                    $replica->user->name = "اکانت تست";
-                    $replica->user->phoneNumber = Str::random(8);
-                    $replica->user->save();
+                    $newUser = $replica->user->replicate();
+                    $newUser->password = Hash::make('123456789');
+                    $newUser->name = "اکانت تست";
+                    $newUser->phoneNumber = Str::random(11);
+                    $newUser->save();
+                    $replica->user()->associate($newUser);
+                    $replica->code = Str::random(8);
                     $replica->save();
                 })
             ])
