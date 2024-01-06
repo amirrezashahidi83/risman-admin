@@ -36,6 +36,7 @@ use Filament\Resources\Pages\CreateRecord;
 use Filament\Forms\Components\Hidden;
 use Illuminate\Support\Str;
 use Hash;
+
 class StudentResource extends Resource
 {
     protected static ?string $model = Student::class;

@@ -34,6 +34,8 @@ use Filament\Forms\Components\Grid;
 use Illuminate\Support\Str;
 use Hash;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+use Filament\Forms\Components\CheckboxList;
 
 class CounselorResource extends Resource
 {
@@ -140,15 +142,32 @@ class CounselorResource extends Resource
                     User::where('id',$user_id)->first()->delete();
                 })->requiresConfirmation(),
                 ReplicateAction::make()
-                ->after(function (Model $replica): void {
+                ->form([
+                    CheckboxList::make('relations')
+                    ->options([
+                        'students' => 'کپی دانش آموزان',
+                    ])
+                ])
+                ->after(function (Model $replica,array $data): void {
+
                     $newUser = $replica->user->replicate();
                     $newUser->password = Hash::make('123456789');
-                    $newUser->name = "اکانت تست";
+                    $newUser->name = "اکانت تست مشاور";
                     $newUser->phoneNumber = strval(mt_rand(10000000000,99999999999));
                     $newUser->save();
                     $replica->user()->associate($newUser);
                     $replica->code = Str::random(8);
                     $replica->save();
+
+                    foreach($replica->students as $student){
+                        $newStudent = $student->replicate();
+                        $newStudent->password = Hash::make('123456789');
+                        $newStudent->name = "اکانت تست دانش آموز";
+                        $newStudent->phoneNumber = strval(mt_rand(10000000000,99999999999));
+                        $newStudent->counselor_id = $replica->id;
+                        $newUser->save();
+                    }
+
                 })
             ])
             ->bulkActions([

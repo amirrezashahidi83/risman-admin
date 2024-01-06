@@ -34,4 +34,13 @@ class Counselor extends Model
         return $this->hasMany(Group::class,'counselor');
     }
 
+    public function plans() {
+        return $this->belongsTo(CounselorPlan::class);
+    }
+
+    public function requests() {
+        return $this->hasMany(PlanRequest::class);
+    }
+
+
 }

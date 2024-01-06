@@ -49,10 +49,28 @@ class Student extends Model
     }
 
     public function requests() {
-        return $this->belongsTo(PlanRequest::class);
+        return $this->hasMany(PlanRequest::class);
     }
 
     public function studyPlans(){
         return $this->hasMany(StudyPlan::class);
     }
+
+protected static function replicateRelations($oldModel, &$newModel)
+{
+    foreach($oldModel->getRelations() as $relation => $modelCollection) {
+
+        foreach ($modelCollection as $model) {
+            $childModel = $model->replicate();
+            $childModel->push();
+            $childModel->setRelations([]);
+
+            $newModel->{$relation}()->save($childModel); 
+            static::replicateRelations($model,$childModel);
+        }
+    }
+
+    return $newModel;
+}
+
 }
