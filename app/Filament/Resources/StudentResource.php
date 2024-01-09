@@ -35,6 +35,9 @@ use Filament\Resources\Pages\Page;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Forms\Components\Hidden;
 use Illuminate\Support\Str;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\CheckboxList;
 use Hash;
 
 class StudentResource extends Resource
@@ -125,9 +128,26 @@ class StudentResource extends Resource
                 TextColumn::make('grade')->label('پایه')->sortable(),
                 TextColumn::make('user.status')->label('وضعیت')->sortable(),
                 TextColumn::make('counselor.user.name')->label('نام مشاور'),
+                TextColumn::make('created_at')->label('تاریخ ثبت نام')
         ])
             ->filters([
-                //
+                Filter::make('created_at')->label('تاریخ ثبت نام')
+                ->form([
+                    DatePicker::make('created_from')->label('شروع'),
+                    DatePicker::make('created_until')->label('پایان'),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['created_from'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                        )
+                        ->when(
+                            $data['created_until'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                        );
+                })
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -138,13 +158,29 @@ class StudentResource extends Resource
                     $record->user->delete();
                 })->requiresConfirmation(),
                 ReplicateAction::make()
-                ->after(function (Model $replica): void {
+                ->form(
+                    [
+                        CheckboxList::make('relations')
+                        ->options([
+                            'study_plans' => 'کپی گزارش ها',
+                        ])    
+                    ]
+                )
+                ->after(function (Model $replica,array $data): void {
                     $newUser = $replica->user->replicate();
                     $newUser->password = Hash::make('123456789');
                     $newUser->name = "اکانت تست";
                     $newUser->phoneNumber = strval(mt_rand(10000000000,99999999999));
                     $newUser->save();
                     $replica->user()->associate($newUser);
+                    
+                    if( isset($data['study_plans']))
+                    foreach( $replica->studyPlans as $studyPlan){
+                            $new_study = $studyPlan->replicate();
+                            $new_study->student_id = $replica->id;
+                            $new_study->save();
+                    }
+
                     $replica->save();
                 })
 

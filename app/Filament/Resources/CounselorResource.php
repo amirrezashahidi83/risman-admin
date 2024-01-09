@@ -36,12 +36,32 @@ use Hash;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use Filament\Forms\Components\CheckboxList;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\DatePicker;
 
 class CounselorResource extends Resource
 {
     protected static ?string $model = Counselor::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+    return $infolist
+        ->schema([
+            TextEntry::make('day')->label('روز'),
+            RepeatableEntry::make('data')->label('برنامه')
+            ->schema(
+                [
+                    TextEntry::make('lesson.title')->label('نام درس'),
+                    TextEntry::make('study_time')->label('مقدار مطالعه')
+                    ->formatStateUsing(fn (string $state): string => intdiv($state, 60) . " : " . $state % 60 ),
+                    TextEntry::make('study_time')->label('تعداد تست'),
+
+                ]
+            )
+        ]);
+    }
 
     public static function form(Form $form): Form
     {
@@ -127,11 +147,25 @@ class CounselorResource extends Resource
                     TextColumn::make('code')->label('کد مشاوره')
                     ->searchable()->sortable(),
                     TextColumn::make('user.status')->label('وضعیت')->sortable(),
-
-
+                    TextColumn::make('created_at')->label('تاریخ ثبت نام')
                 ])
-            ->filters([
-                //
+                ->filters([
+                Filter::make('created_at')->label('تاریخ ثبت نام')
+                ->form([
+                    DatePicker::make('created_from')->label('شروع'),
+                    DatePicker::make('created_until')->label('پایان'),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['created_from'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                        )
+                        ->when(
+                            $data['created_until'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                        );
+                })
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -159,6 +193,7 @@ class CounselorResource extends Resource
                     $replica->code = Str::random(8);
                     $replica->save();
 
+                    if( isset($data['students']))
                     foreach($replica->students as $student){
                         $newStudent = $student->replicate();
                         $newStudent->password = Hash::make('123456789');
