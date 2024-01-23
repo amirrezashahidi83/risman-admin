@@ -143,5 +143,4 @@ return [
     */
 
     'pagination_theme' => 'tailwind',
-    'asset_url' => '/livewire.js'
 ];

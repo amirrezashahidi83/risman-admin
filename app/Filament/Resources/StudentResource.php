@@ -70,12 +70,8 @@ class StudentResource extends Resource
                         [
                             TextInput::make('password')->label('رمز عبور')
                             ->password()->confirmed()
-                            ->dehydrated(
-                                function($livewire){
-                                    return strlen($livewire->data['user']['password']) != 0;
-                                }
-                            )
                             ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
+                            ->dehydrated(fn ($state) => filled($state))
                             ->required(fn (Page $livewire) => $livewire instanceof CreateRecord),
                             TextInput::make('password_confirmation')
                             ->label('تکرار رمز عبور')

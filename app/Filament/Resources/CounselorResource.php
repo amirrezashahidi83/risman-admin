@@ -45,24 +45,6 @@ class CounselorResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function infolist(Infolist $infolist): Infolist
-    {
-    return $infolist
-        ->schema([
-            TextEntry::make('day')->label('روز'),
-            RepeatableEntry::make('data')->label('برنامه')
-            ->schema(
-                [
-                    TextEntry::make('lesson.title')->label('نام درس'),
-                    TextEntry::make('study_time')->label('مقدار مطالعه')
-                    ->formatStateUsing(fn (string $state): string => intdiv($state, 60) . " : " . $state % 60 ),
-                    TextEntry::make('study_time')->label('تعداد تست'),
-
-                ]
-            )
-        ]);
-    }
-
     public static function form(Form $form): Form
     {
         return $form
