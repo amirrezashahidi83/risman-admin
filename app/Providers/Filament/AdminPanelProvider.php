@@ -18,6 +18,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Livewire\StatsOverview;
+use App\Filament\Resources\UserResource\Widgets\LatestRegistredUsers;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -38,7 +39,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
             ->widgets([
-                StatsOverview::class
+                StatsOverview::class,
+                LatestRegistredUsers::class
             ])
             ->middleware([
                 EncryptCookies::class,
