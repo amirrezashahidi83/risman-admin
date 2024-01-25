@@ -22,6 +22,7 @@ use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Hidden;
 use Filament\Tables\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Tables\Actions\ReplicateAction;
@@ -53,6 +54,7 @@ class CounselorResource extends Resource
                 Section::make('اطلاعات عمومی')->label('')
                 ->relationship('user')
                 ->schema([
+		    Hidden::make('role')->default(1),
                     Grid::make('')->schema(
                         [
                             TextInput::make('name')->label('نام و نام خانوادگی')->required(),
@@ -63,7 +65,8 @@ class CounselorResource extends Resource
 
                     Grid::make('')->schema(
                         [
-                            FileUpload::make('profilePic')->label('عکس پروفایل')->disk('public'),
+                            FileUpload::make('profilePic')->label('عکس پروفایل')->disk('public')
+			    ->default('/logo192.png')
                         ]
                     )->columns(1),
                     Grid::make('')->schema(
@@ -129,7 +132,7 @@ class CounselorResource extends Resource
                     TextColumn::make('code')->label('کد مشاوره')
                     ->searchable()->sortable(),
                     TextColumn::make('user.status')->label('وضعیت')->sortable(),
-                    TextColumn::make('created_at')->label('تاریخ ثبت نام')
+                    TextColumn::make('created_at')->label('تاریخ ثبت نام')->sortable()
                 ])
                 ->filters([
                 Filter::make('created_at')->label('تاریخ ثبت نام')

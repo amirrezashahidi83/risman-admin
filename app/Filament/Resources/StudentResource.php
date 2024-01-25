@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Hidden;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Forms\Components\Section;
@@ -33,7 +34,6 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\FileUpload;
 use Filament\Resources\Pages\Page;
 use Filament\Resources\Pages\CreateRecord;
-use Filament\Forms\Components\Hidden;
 use Illuminate\Support\Str;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
@@ -53,6 +53,7 @@ class StudentResource extends Resource
                 Section::make('اطلاعات عمومی')->label('')
                 ->relationship('user')
                 ->schema([
+		    Hidden::make('role')->default(2),
                     Grid::make('')->schema(
                         [
                             TextInput::make('name')->label('نام و نام خانوادگی')->required(),
@@ -124,7 +125,7 @@ class StudentResource extends Resource
                 TextColumn::make('grade')->label('پایه')->sortable(),
                 TextColumn::make('user.status')->label('وضعیت')->sortable(),
                 TextColumn::make('counselor.user.name')->label('نام مشاور'),
-                TextColumn::make('created_at')->label('تاریخ ثبت نام')
+                TextColumn::make('created_at')->label('تاریخ ثبت نام')->sortable()
         ])
             ->filters([
                 Filter::make('created_at')->label('تاریخ ثبت نام')
