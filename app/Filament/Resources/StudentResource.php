@@ -39,7 +39,8 @@ use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\CheckboxList;
 use Hash;
-
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 class StudentResource extends Resource
 {
     protected static ?string $model = Student::class;
@@ -127,7 +128,9 @@ class StudentResource extends Resource
                 TextColumn::make('counselor.user.name')->label('نام مشاور'),
                 TextColumn::make('created_at')->label('تاریخ ثبت نام')->sortable()
         ])
-            ->filters([
+	->filters([
+		SelectFilter::make('counselor')
+		->label('مشاور')->relationship('counselor','code'),
                 Filter::make('created_at')->label('تاریخ ثبت نام')
                 ->form([
                     DatePicker::make('created_from')->label('شروع'),
