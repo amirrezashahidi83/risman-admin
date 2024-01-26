@@ -39,6 +39,7 @@ use App\Models\User;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\TernaryFilter;
 
 class CounselorResource extends Resource
 {
@@ -135,6 +136,15 @@ class CounselorResource extends Resource
                     TextColumn::make('created_at')->label('تاریخ ثبت نام')->sortable()
                 ])
                 ->filters([
+                    TernaryFilter::make('status')->label('وضعیت')
+                    ->options(
+                        [
+                            0 => 'غیرفعال',
+                            1 => 'فعال'
+                        ]
+                    )->attribute('user.status')
+                    ->trueLabel('فعال')
+                    ->falseLabel('غیرفعال'),            
                 Filter::make('created_at')->label('تاریخ ثبت نام')
                 ->form([
                     DatePicker::make('created_from')->label('شروع'),

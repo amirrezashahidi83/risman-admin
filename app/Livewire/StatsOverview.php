@@ -10,6 +10,7 @@ use App\Models\StudyPlan;
 use App\Models\CounselorPlan;
 use App\Models\PlanRequest;
 use App\Models\Transaction;
+use App\Models\StudentPlan;
 use Carbon\Carbon;
 class StatsOverview extends BaseWidget
 {
@@ -29,7 +30,7 @@ class StatsOverview extends BaseWidget
                 )
             ->count() 
             ),
-            Stat::make('تعداد برنامه های ارسال شده امروز', CounselorPlan::whereBetween('created_at',
+            Stat::make('تعداد برنامه های ارسال شده امروز', StudentPlan::whereBetween('created_at',
             [Carbon::today()->subDays(1),Carbon::today()]
             )
             ->count() 

@@ -41,6 +41,7 @@ use Filament\Forms\Components\CheckboxList;
 use Hash;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
+
 class StudentResource extends Resource
 {
     protected static ?string $model = Student::class;
@@ -129,12 +130,42 @@ class StudentResource extends Resource
                 TextColumn::make('created_at')->label('تاریخ ثبت نام')->sortable()
         ])
 	->filters([
+        TernaryFilter::make('status')->label('وضعیت')
+        ->options(
+            [
+                0 => 'غیرفعال',
+                1 => 'فعال'
+            ]
+        )->attribute('user.status')
+        ->trueLabel('فعال')
+        ->falseLabel('غیرفعال'),
+        SelectFilter::make('school'),
+        SelectFilter::make('major')
+        ->label('رشته')
+        ->options([
+            0 => 'بدون رشته',
+            1 => 'ریاضی',
+            2 => 'تجربی',
+            3 => 'انسانی'
+        ]),
+        SelectFilter::make('grade')
+        ->label('پایه')
+        ->options([
+            1 => 'هفتم',
+            2 => 'هشتم',
+            3 => 'نهم',
+            4 => 'دهم',
+            5 => 'یازدهم',
+            6 => 'دوازدهم'
+        ]),
 		SelectFilter::make('counselor')
 		->label('مشاور')->relationship('counselor','code'),
                 Filter::make('created_at')->label('تاریخ ثبت نام')
                 ->form([
-                    DatePicker::make('created_from')->label('شروع'),
-                    DatePicker::make('created_until')->label('پایان'),
+                    Section::make()->label('ثبت نام')->schema([
+                    DatePicker::make('created_from')->label('تاریخ شروع'),
+                    DatePicker::make('created_until')->label('تاریخ پایان'),
+                    ])
                 ])
                 ->query(function (Builder $query, array $data): Builder {
                     return $query
