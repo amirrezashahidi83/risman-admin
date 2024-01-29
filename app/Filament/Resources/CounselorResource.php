@@ -47,6 +47,38 @@ class CounselorResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    public static function getForm() : array {
+        return [
+            Section::make('اطلاعات عمومی')->label('')
+            ->schema([
+                Hidden::make('counselor.user.rate')->default(0),
+                Hidden::make('counselor.user.password')->default(Hash::make('12345678')),
+        Hidden::make('counselor.user.role')->default(1),
+                Grid::make('')->schema(
+                    [
+                        TextInput::make('counselor.user.name')->label('نام و نام خانوادگی')->required(),
+                        TextInput::make('counselor.user.phoneNumber')->label('شماره تلفن')->required()
+                        ->unique(column: 'phoneNumber',ignoreRecord: true,table: User::class),
+                    ]
+                )->columns(2),
+                Select::make('counselor.user.status')->label('وضعیت')
+                ->required()->options([
+                    0 => 'غیر فعال',
+                    1 => 'فعال'
+                ])
+            ]),
+            Section::make('اطلاعات مشاور')->label('')
+            ->schema([
+                Grid::make('')->schema([
+                TextInput::make('counselor.counselor.code')->label('کد مشاوره')->readonly(fn (Page $livewire) => $livewire instanceof EditRecord)
+                ->afterStateHydrated(function (TextInput $component,$state) {
+                    $component->state(! $state ? Str::random(8) : $state);
+                })->unique(column: 'code',ignoreRecord: true,table: Counselor::class),
+                ])->columns(1),
+                ])
+        ];
+    }
+
     public static function form(Form $form): Form
     {
         return $form
