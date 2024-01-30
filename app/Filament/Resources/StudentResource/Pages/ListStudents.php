@@ -38,7 +38,7 @@ class ListStudents extends ListRecords
                 ->disk('local'),
                 TextInput::make('school')
                 ->label('موسسه'),
-                Checkbox::make('separated_name')
+                Checkbox::make('seperated_name')
                 ->label('نام و نام خانوادگی دو سطر جدا هستند'),
                 TextInput::make('startingRow')
                 ->label('سطر شروع')

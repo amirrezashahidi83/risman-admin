@@ -11,25 +11,31 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 use Hash;
 use Filament\Notifications\Notification;
 
-class StudentsImport implements OnEachRow,WithStartRow
+class StudentsImport implements OnEachRow,WithStartRow, WithEvents
 {
     /**
     * @param array $row
     *
     * @return \Illuminate\Database\Eloquent\Model|null
     */
-
+    private $sheetNames;
     function __construct(private $options){
-
+	$this->sheetNames = [];
     }
 
     public function onRow(Row $row)
     {
         $row = $row->toArray();
 
+	for($index = 0;$index < count($row);$index++){
+		$row[$index] = trim($row[$index]);
+	}
+
         $grades = ['هفتم' => 1,'هشتم' => 2,'نهم' => 3,'دهم' => 4,'یازدهم' => 5,'دوازدهم' => 6,'فارغ' => 6];
         $majors = ['' => 0,'بدون رشته' => 0,'ریاضی' => 1,'تجربی' => 2,'انسانی' => 3];
 
+	if(strlen($row[1]) == 0)
+		return;
         $is_name_seperated = $this->options['seperated_name'] ?? false;
         $user = User::firstOrCreate(
             [
@@ -66,4 +72,12 @@ class StudentsImport implements OnEachRow,WithStartRow
     public function startRow() : int{
         return $this->options['startingRow'] ?? 1;
    }
+    public function registerEvents(): array
+    {
+	return [
+					            BeforeSheet::class => function(BeforeSheet $event) {
+							                    $this->sheetNames[] = $event->getSheet()->getTitle();
+									                } 
+				        ];
+				    }
 }

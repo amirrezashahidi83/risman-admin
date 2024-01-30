@@ -222,7 +222,6 @@ class StudentResource extends Resource
                     foreach($records as $record){
                         $user_id = $record['user']['id'];
                         $record->delete();
-                        Schedule::where('user_id',$user_id)->first()->delete();
                         User::where('id',$user_id)->first()->delete();
                     }
                 })->requiresConfirmation(),
