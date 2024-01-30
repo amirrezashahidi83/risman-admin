@@ -133,7 +133,7 @@ class StudentResource extends Resource
                 TextColumn::make('user.score')->label('امتیاز'),
                 ImageColumn::make('user.profilePic')->label('عکس پروفایل')
                 ->state(function (Student $record) {
-                    return 'https://risman.app';
+                    return 'https://risman.app'.$record->user->profilePic;
                 }),
                 TextColumn::make('school')->label('مدرسه')
                 ->searchable()->sortable(),
