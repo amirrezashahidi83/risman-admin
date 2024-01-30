@@ -24,6 +24,10 @@ class StudyPlan extends Model
         self::PERIOD
     ];
 
+    protected $casts = [
+        'day' => Enums\WeekEnum::class
+    ];
+    
     protected $guarded = [];
 
     protected function data() : Attribute{

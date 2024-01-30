@@ -257,8 +257,49 @@ class StudentResource extends Resource
 
             ])
             ->bulkActions([
+                BulkAction::make('change_counselor')
+                ->label('تغییر مشاور')
+                ->form(
+                    [
+                        Select::make('counselor_id')->label('مشاور')
+                        ->
+                        options(
+                            Counselor::all()->pluck('user.name','id')->filter(function ($value,$key) {
+                                return isset($value) && isset($key);
+                            })
+                            ->map(function ($item,$key) {
+                                return $item.' '.Counselor::find($key)->code;
+                            })
+                        )
+                        ->searchable()    
+                    ]
+                )
+                ->action(function($records,$data): void{
+                    foreach($records as $record){
+                        $record->counselor_id = $data['counselor_id'];
+                        $record->save();
+
+                    }
+                }),
+                BulkAction::make('add_score')
+                ->label('افزایش / کاهش سکه')
+                ->form(
+                    [
+                        TextInput::make('score')
+                        ->label('مقدار سکه')
+                        ->required()
+                    ]
+                )
+                ->action(function($records,$data): void{
+                    foreach($records as $record){
+                        $record->user->score = $record->user->score + $data['score'];
+                        $record->user->save();
+
+                    }
+                }),
                 BulkAction::make('delete')->
-                action(function($records): void{
+                label('حذف گروهی')
+                ->action(function($records): void{
                     foreach($records as $record){
                         $user_id = $record['user']['id'];
                         $record->delete();

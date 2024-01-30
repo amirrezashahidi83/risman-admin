@@ -263,7 +263,8 @@ class CounselorResource extends Resource
             ])
             ->bulkActions([
                 BulkAction::make('delete')->
-                action(function($records): void{
+                label('حذف گروهی')
+                ->action(function($records): void{
                     foreach($records as $record){
                         $user_id = $record['user']['id'];
                         $record->delete();

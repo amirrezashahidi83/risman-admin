@@ -26,9 +26,10 @@ class StudyPlanResource extends Resource
     protected static ?string $modelLabel = 'گزارش مطالعه';
     protected static ?string $pluralModelLabel = 'گزارشات مطالعاتی';
 
+
     public static function infolist(Infolist $infolist): Infolist
     {
-    return $infolist
+        return $infolist
         ->schema([
             TextEntry::make('day')->label('روز'),
             RepeatableEntry::make('data')->label('برنامه')
@@ -62,7 +63,7 @@ class StudyPlanResource extends Resource
                 TextColumn::make('day')->label('روز')
                 ->sortable()->searchable(),
                 TextColumn::make('created_at')->label('تاریخ ارسال')
-                ->sortable()->searchable()
+                ->sortable()->searchable()->since()
             ])
             ->filters([
                 //
