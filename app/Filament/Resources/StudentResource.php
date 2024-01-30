@@ -111,7 +111,9 @@ class StudentResource extends Resource
                     Select::make('counselor_id')->label('مشاور')
                     ->
                     options(
-                        Counselor::all()->pluck('user.name','id')
+                        Counselor::all()->pluck('user.name','id')->filter(function ($value,$key) {
+                            return isset($value) && isset($key);
+                        })
                     )
                     ->searchable(),
                     ]
