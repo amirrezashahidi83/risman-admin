@@ -114,6 +114,9 @@ class StudentResource extends Resource
                         Counselor::all()->pluck('user.name','id')->filter(function ($value,$key) {
                             return isset($value) && isset($key);
                         })
+                        ->map(function ($item,$key) {
+                            return $item.' '.Counselor::find($key)->code;
+                        })
                     )
                     ->searchable(),
                     ]
@@ -140,7 +143,10 @@ class StudentResource extends Resource
                 TextColumn::make('major')->label('رشته')->sortable(),
                 TextColumn::make('grade')->label('پایه')->sortable(),
                 TextColumn::make('user.status')->label('وضعیت')->sortable(),
-                TextColumn::make('counselor.user.name')->label('نام مشاور'),
+                TextColumn::make('counselor.user.name')->label('نام مشاور')
+                ->state(function (Student $record) {
+                    return isset($record->counselor) ? $record->counselor->user->name. ' '.$record->counselor->code : '';
+                }),
                 TextColumn::make('created_at')->label('تاریخ ثبت نام')->sortable()
         ])
 	->filters([
