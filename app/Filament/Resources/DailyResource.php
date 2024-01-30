@@ -22,7 +22,9 @@ class DailyResource extends Resource
 {
     protected static ?string $model = Daily::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'عملکرد';
+    protected static ?string $modelLabel = 'نقل قول';
+    protected static ?string $pluralModelLabel = 'نقل قول ها';
 
     public static function form(Form $form): Form
     {

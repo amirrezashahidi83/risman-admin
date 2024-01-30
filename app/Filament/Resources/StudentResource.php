@@ -41,13 +41,18 @@ use Filament\Forms\Components\CheckboxList;
 use Hash;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
+use App\Filament\Resources\UserResource;
+use Filament\Forms\Components\Textarea;
+use Melipayamak\MelipayamakApi;
+use Filament\Notifications\Notification;
 
 class StudentResource extends Resource
 {
     protected static ?string $model = Student::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Users';
+    protected static ?string $navigationGroup = 'کاربران';
+    protected static ?string $modelLabel = 'دانش آموز';
+    protected static ?string $pluralModelLabel = 'دانش آموزان';
 
     public static function form(Form $form): Form
     {
@@ -92,7 +97,8 @@ class StudentResource extends Resource
                 Section::make('')->label('اطلاعات دانش آموز')
                 ->schema(
                     [
-                    Hidden::make('goal')->default('هدف شما'),
+                    Hidden::make('goal')->default('هدف شما')
+                    ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord),
                     Select::make('major')->label('رشته')
                     ->options(MajorEnum::class),
                     Select::make('grade')->label('پایه')
@@ -102,9 +108,11 @@ class StudentResource extends Resource
                         1 => 'فعال'
                     ])->required(),
                     TextInput::make('school')->label('مدرسه'),
-                    Select::make('counselor_id')->label('کد مشاور')
+                    Select::make('counselor_id')->label('مشاور')
                     ->
-                    relationship('counselor','code')
+                    options(
+                        Counselor::all()->pluck('user.name','id')
+                    )
                     ->searchable(),
                     ]
                 )
@@ -214,7 +222,27 @@ class StudentResource extends Resource
                     }
 
                     $replica->save();
-                })
+                }),
+                Action::make('sms')
+                    ->label('ارسال پیامک')
+                    ->form([
+                        Textarea::make('text')
+                        ->label('متن پیامک')
+                        ->required()
+                    ])
+                    ->action(function(array $data,$record) : void{
+                        $username = '9122245852';
+                        $password = '34fc5';
+                        $api = new MelipayamakApi($username,$password);
+                        $sms = $api->sms('soap');
+                        $result = json_decode($sms->sendByBaseNumber(array($data['text']),$record->user->phoneNumber,192728));
+                        Notification::make()
+                        ->title('ارسال شد')
+                        ->body('پیامک برای دانش آموز ' . $record->user->name . ' با موفقیت ارسال شد')
+                        ->success()
+                        ->send();    
+
+                    })
 
             ])
             ->bulkActions([
@@ -226,6 +254,30 @@ class StudentResource extends Resource
                         User::where('id',$user_id)->first()->delete();
                     }
                 })->requiresConfirmation(),
+                BulkAction::make('sms')
+                ->label('ارسال پیامک گروهی')
+                ->form([
+                    Textarea::make('text')
+                    ->label('متن پیامک')
+                    ->required()
+                ])
+                ->action(function(array $data,$records) : void{
+                    $username = '9122245852';
+                    $password = '34fc5';
+                    $from = "500010608307";
+                    $api = new MelipayamakApi($username,$password);
+                    $sms = $api->sms('soap');
+                    foreach($records as $record){
+                        $result = json_decode($sms->sendByBaseNumber(array($data['text']),$record->user->phoneNumber,192728));
+                        Notification::make()
+                        ->title('ارسال شد')
+                        ->body('پیامک برای دانش آموز ' . $record->user->name . ' با موفقیت ارسال شد')
+                        ->success()
+                        ->send();    
+                    }
+
+                })
+,
 
             ])
             ->paginated([10, 25, 50, 100,250, 'all']);

@@ -19,6 +19,8 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Livewire\StatsOverview;
 use App\Filament\Resources\UserResource\Widgets\LatestRegistredUsers;
+use Filament\Navigation\NavigationGroup;
+use App\Filament\Resources\CounselorResource;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -58,6 +60,17 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
 	    ->spa()
-    	;
+        ->navigationGroups([
+            NavigationGroup::make('')
+                 ->label('کاربران')
+                 ->icon('heroicon-o-user'),
+            NavigationGroup::make()
+                ->label('عملکرد')
+                ->icon('heroicon-o-list-bullet'),
+            NavigationGroup::make()
+                ->label('تنظیمات')
+                ->icon('heroicon-o-cog-6-tooth')
+                ->collapsed(),
+        ]);;
     }
 }

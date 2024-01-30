@@ -23,7 +23,9 @@ class LessonResource extends Resource
 {
     protected static ?string $model = Lesson::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'تنظیمات';
+    protected static ?string $modelLabel = 'درس';
+    protected static ?string $pluralModelLabel = 'درس ها';
 
     public static $majors = [
         1 => 'ریاضی',

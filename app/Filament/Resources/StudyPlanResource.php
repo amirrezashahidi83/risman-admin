@@ -22,7 +22,9 @@ class StudyPlanResource extends Resource
 {
     protected static ?string $model = StudyPlan::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'عملکرد';
+    protected static ?string $modelLabel = 'گزارش مطالعه';
+    protected static ?string $pluralModelLabel = 'گزارشات مطالعاتی';
 
     public static function infolist(Infolist $infolist): Infolist
     {

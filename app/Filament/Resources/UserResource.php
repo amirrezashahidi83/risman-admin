@@ -12,14 +12,21 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Actions\Action;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Users';
-    
+    protected static ?string $navigationGroup = 'کاربران';
+    protected static ?string $modelLabel = 'کاربر';
+    protected static ?string $pluralModelLabel = 'همه کاربران';
+
+    public static function SMSAction()  {
+        return 0;
+        
+    }
+
     public static function form(Form $form): Form
     {
         return $form

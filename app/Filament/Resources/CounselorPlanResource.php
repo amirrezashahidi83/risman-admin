@@ -17,8 +17,11 @@ class CounselorPlanResource extends Resource
 {
     protected static ?string $model = CounselorPlan::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'عملکرد';
+    protected static ?string $modelLabel = 'برنامه مطالعاتی';
+    protected static ?string $pluralModelLabel = 'برنامه های مطالعاتی';
+    
     public static function form(Form $form): Form
     {
         return $form
