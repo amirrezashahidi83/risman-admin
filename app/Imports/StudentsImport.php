@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Student;
+use App\Models\Counselor;
 use App\Models\User;
 use Maatwebsite\Excel\Concerns\OnEachRow;
 use Maatwebsite\Excel\Row;
@@ -38,13 +39,11 @@ class StudentsImport implements OnEachRow,WithStartRow, WithEvents
     $grades = ['هفتم' => 1,'هشتم' => 2,'نهم' => 3,'دهم' => 4,'یازدهم' => 5,'دوازدهم' => 6,'فارغ' => 6];
     $majors = ['' => 0,'بدون رشته' => 0,'ریاضی' => 1,'تجربی' => 2,'انسانی' => 3];
 
-	if(strlen($row[1]) == 0)
-		return;
+	if(strlen($row[1]) != 0){
         $is_name_seperated = $this->options['seperated_name'] ?? false;
         $phoneNumber = $is_name_seperated ? $row[3] : $row[2];
         
-        if(User::where('phoneNumber',$phoneNumber)->count() > 0)
-            return;
+        if(User::where('phoneNumber',$phoneNumber)->count() == 0){
 
         $user = User::firstOrCreate(
             [
@@ -76,6 +75,8 @@ class StudentsImport implements OnEachRow,WithStartRow, WithEvents
         ->body('دانش آموز  ' . $row[1] . ' با موفقیت اضافه شد')
         ->success()
         ->send();
+        }
+        }
     }
 
     public function startRow() : int{
