@@ -28,6 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
     	    ->login()
+    	    ->brandLogo(asset('/risman_logo.png'))
             ->colors([
                 'primary' => "#008dcb",
             ])
@@ -56,6 +57,7 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->spa();
+	    ->spa()
+    	;
     }
 }

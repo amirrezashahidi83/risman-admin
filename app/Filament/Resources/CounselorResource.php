@@ -46,6 +46,7 @@ class CounselorResource extends Resource
     protected static ?string $model = Counselor::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Users';
 
     public static function getForm() : array {
         return [
