@@ -150,6 +150,7 @@ class StudentResource extends Resource
                     return isset($record->counselor) ? $record->counselor->user->name. ' '.$record->counselor->code : '';
                 })->searchable()->sortable(),
                 TextColumn::make('created_at')->label('تاریخ ثبت نام')->sortable()
+                ->jalaliDateTime() 
         ])
 	->filters([
         TernaryFilter::make('status')->label('وضعیت')
@@ -224,8 +225,8 @@ class StudentResource extends Resource
                 Filter::make('created_at')->label('تاریخ ثبت نام')
                 ->form([
                     Section::make()->label('ثبت نام')->schema([
-                    DatePicker::make('created_from')->label('تاریخ شروع'),
-                    DatePicker::make('created_until')->label('تاریخ پایان'),
+                    DatePicker::make('created_from')->label('تاریخ شروع')->jalali(),
+                    DatePicker::make('created_until')->label('تاریخ پایان')->jalali(),
                     ])
                 ]) 
                 ->query(function (Builder $query, array $data): Builder {
@@ -299,6 +300,29 @@ class StudentResource extends Resource
 
             ])
             ->bulkActions([
+                BulkAction::make('change_school')
+                ->label('تغییر مدرسه')
+                ->form(
+                    [
+                        Select::make('school')
+                        ->label('موسسه')
+                        ->options(
+                            collect(DB::select("select DISTINCT school from students"))
+                            ->pluck('school','school')
+                            ->filter(function ($value,$key) {
+                                return isset($value) && isset($key) && strlen($value) > 0;
+                            })->toArray()
+            
+                        ),            
+                    ]
+                )
+                ->action(function($records,$data): void{
+                    foreach($records as $record){
+                        $record->school = $data['school'];
+                        $record->save();
+
+                    }
+                }),
                 BulkAction::make('change_counselor')
                 ->label('تغییر مشاور')
                 ->form(

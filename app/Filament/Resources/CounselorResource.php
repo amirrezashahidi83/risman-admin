@@ -168,12 +168,13 @@ class CounselorResource extends Resource
                     TextColumn::make('user.score')->label('امتیاز'),
 		    ImageColumn::make('user.profilePic')->label('عکس پروفایل')
 		    ->state(function (Counselor $record) {
-                    return 'https://risman.app'.$record->user->profilePic;
+                    return 'https://risman.app'.( $record->user->profilePic ?? '');
                 }),
                     TextColumn::make('code')->label('کد مشاوره')
                     ->searchable()->sortable(),
                     TextColumn::make('user.status')->label('وضعیت')->sortable(),
                     TextColumn::make('created_at')->label('تاریخ ثبت نام')->sortable()
+                    ->jalaliDateTime()
                 ])
                 ->filters([
                     TernaryFilter::make('status')->label('وضعیت')
@@ -187,8 +188,10 @@ class CounselorResource extends Resource
                     ->falseLabel('غیرفعال'),            
                 Filter::make('created_at')->label('تاریخ ثبت نام')
                 ->form([
-                    DatePicker::make('created_from')->label('شروع'),
-                    DatePicker::make('created_until')->label('پایان'),
+                    DatePicker::make('created_from')->label('شروع')
+                    ->jalali(),
+                    DatePicker::make('created_until')->label('پایان')
+                    ->jalali(),
                 ])
                 ->query(function (Builder $query, array $data): Builder {
                     return $query
@@ -205,7 +208,8 @@ class CounselorResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Action::make('delete')->
-                action(function($record): void{
+                label('حذف')
+                ->action(function($record): void{
                     $user_id = $record['user']['id'];
                     $record->delete();
                     User::where('id',$user_id)->first()->delete();
