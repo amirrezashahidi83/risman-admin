@@ -45,6 +45,7 @@ use App\Filament\Resources\UserResource;
 use Filament\Forms\Components\Textarea;
 use Melipayamak\MelipayamakApi;
 use Filament\Notifications\Notification;
+use DB;
 
 class StudentResource extends Resource
 {
@@ -111,7 +112,8 @@ class StudentResource extends Resource
                     Select::make('counselor_id')->label('مشاور')
                     ->
                     options(
-                        Counselor::all()->pluck('user.name','id')->filter(function ($value,$key) {
+                        Counselor::all()->pluck('user.name','id')
+                        ->filter(function ($value,$key) {
                             return isset($value) && isset($key);
                         })
                         ->map(function ($item,$key) {
@@ -133,7 +135,7 @@ class StudentResource extends Resource
                 TextColumn::make('user.phoneNumber')->label('شماره تلفن')
                 ->searchable()->sortable(),
                 TextColumn::make('user.balance')->label('موجودی'),
-                TextColumn::make('user.score')->label('امتیاز'),
+                TextColumn::make('user.score')->label('امتیاز')->sortable(),
                 ImageColumn::make('user.profilePic')->label('عکس پروفایل')
                 ->state(function (Student $record) {
                     return 'https://risman.app'.$record->user->profilePic;
@@ -146,7 +148,7 @@ class StudentResource extends Resource
                 TextColumn::make('counselor.user.name')->label('نام مشاور')
                 ->state(function (Student $record) {
                     return isset($record->counselor) ? $record->counselor->user->name. ' '.$record->counselor->code : '';
-                }),
+                })->searchable()->sortable(),
                 TextColumn::make('created_at')->label('تاریخ ثبت نام')->sortable()
         ])
 	->filters([
@@ -159,7 +161,37 @@ class StudentResource extends Resource
         )->attribute('user.status')
         ->trueLabel('فعال')
         ->falseLabel('غیرفعال'),
-        SelectFilter::make('school'),
+        Filter::make('school')
+        ->label('موسسه')
+        ->form(
+            [
+            Select::make('school')
+            ->label('موسسه')
+            ->options(
+                collect(DB::select("select DISTINCT school from students"))
+                ->pluck('school','school')
+                ->filter(function ($value,$key) {
+                    return isset($value) && isset($key) && strlen($value) > 0;
+                })->toArray()
+
+            )
+            ->multiple(),
+            Checkbox::make('exclude')
+            ->label('exclude')
+            ]
+        )
+        ->query(function (Builder $query, array $data): Builder {
+
+            return $query
+            ->when(
+                $data,
+                fn (Builder $query, $data): Builder => 
+                    $data['exclude'] ? 
+                    $query->whereNot('school',$data['school'])
+                    : 
+                    $query->where('school',$data['school'])
+            );
+        }),
         SelectFilter::make('major')
         ->label('رشته')
         ->options([
@@ -178,15 +210,24 @@ class StudentResource extends Resource
             5 => 'یازدهم',
             6 => 'دوازدهم'
         ]),
-		SelectFilter::make('counselor')
-		->label('مشاور')->relationship('counselor','code'),
+		SelectFilter::make('counselor_id')
+		->label('مشاور')
+        ->options(
+            Counselor::all()->pluck('user.name','id')->filter(function ($value,$key) {
+                return isset($value) && isset($key);
+            })
+            ->map(function ($item,$key) {
+                return $item.' '.Counselor::find($key)->code;
+            })
+        )
+        ->multiple(),
                 Filter::make('created_at')->label('تاریخ ثبت نام')
                 ->form([
                     Section::make()->label('ثبت نام')->schema([
                     DatePicker::make('created_from')->label('تاریخ شروع'),
                     DatePicker::make('created_until')->label('تاریخ پایان'),
                     ])
-                ])
+                ]) 
                 ->query(function (Builder $query, array $data): Builder {
                     return $query
                         ->when(
@@ -200,6 +241,7 @@ class StudentResource extends Resource
                 })
 
             ])
+            ->filtersFormColumns(3)
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Action::make('delete')->
