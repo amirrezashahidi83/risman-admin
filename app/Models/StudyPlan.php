@@ -32,7 +32,7 @@ class StudyPlan extends Model
 
     protected function data() : Attribute{
         return Attribute::make(
-            get: fn (string $value) => StudyTime::findMany(json_decode($value,true)),
+            get: fn (string $value) => array_values(json_decode($value,true)),
         );
     }
 

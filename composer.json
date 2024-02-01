@@ -19,6 +19,7 @@
         "maatwebsite/excel": "^3.1",
         "melipayamak/laravel": "^1.0",
         "mokhosh/filament-jalali": "^3.2",
+        "morilog/jalali": "^3.4",
         "php-open-source-saver/jwt-auth": "^2.1",
         "rupadana/filament-custom-forms": "^3.0"
     },

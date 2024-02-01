@@ -22,4 +22,8 @@ class CounselorPlan extends Model
     public function counselor(){
         return $this->belongsTo(Counselor::class,'counselor_id');
     }
+
+    public function studentPlans(){
+        return $this->hasMany(StudentPlan::class);
+    }
 }

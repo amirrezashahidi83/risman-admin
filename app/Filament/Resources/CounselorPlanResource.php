@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CounselorPlanResource\Pages;
 use App\Filament\Resources\CounselorPlanResource\RelationManagers;
-use App\Models\CounselorPlan;
+use App\Models\StudentPlan;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,16 +12,31 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Infolists\Components\ViewEntry;
+use Filament\Infolists\Components\Grid;
+use Filament\Infolists\Infolist;
 
 class CounselorPlanResource extends Resource
 {
-    protected static ?string $model = CounselorPlan::class;
+    protected static ?string $model = StudentPlan::class;
 
 
     protected static ?string $navigationGroup = 'عملکرد';
     protected static ?string $modelLabel = 'برنامه مطالعاتی';
     protected static ?string $pluralModelLabel = 'برنامه های مطالعاتی';
     
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+        ->schema([
+            Grid::make(1)->schema([
+            ViewEntry::make('data')->label('برنامه')
+            ->view('plan')
+            ])
+        ]);
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -34,13 +49,19 @@ class CounselorPlanResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('plan.counselor.user.name')->label('مشاور')
+                ->sortable(),
+                TextColumn::make('student.user.name')->label('دانش آموز')
+                ->sortable(),
+                TextColumn::make('created_at')->label('تاریخ ارسال')
+                ->sortable()->jalaliDateTime()
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -38,6 +38,11 @@ class Counselor extends Model
         return $this->belongsTo(CounselorPlan::class);
     }
 
+
+    public function allPlans() {
+        return $this->belongsToMany(StudentPlan::class,'students','plan_id');
+    }
+
     public function requests() {
         return $this->hasMany(PlanRequest::class);
     }

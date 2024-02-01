@@ -17,6 +17,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\KeyValueEntry;
+use Filament\Infolists\Components\ViewEntry;
+use Filament\Infolists\Components\Grid;
 
 class StudyPlanResource extends Resource
 {
@@ -31,17 +34,10 @@ class StudyPlanResource extends Resource
     {
         return $infolist
         ->schema([
-            TextEntry::make('day')->label('روز'),
-            RepeatableEntry::make('data')->label('برنامه')
-            ->schema(
-                [
-                    TextEntry::make('lesson.title')->label('نام درس'),
-                    TextEntry::make('study_time')->label('مقدار مطالعه')
-                    ->formatStateUsing(fn (string $state): string => intdiv($state, 60) . " : " . $state % 60 ),
-                    TextEntry::make('study_time')->label('تعداد تست'),
-
-                ]
-            )
+            Grid::make(1)->schema([
+            ViewEntry::make('data')->label('برنامه')
+            ->view('study_entry')
+            ])
         ]);
     }
     public static function form(Form $form): Form
@@ -63,14 +59,14 @@ class StudyPlanResource extends Resource
                 TextColumn::make('day')->label('روز')
                 ->sortable()->searchable(),
                 TextColumn::make('created_at')->label('تاریخ ارسال')
-                ->sortable()->searchable()->since()
+                ->sortable()->searchable()->jalaliDateTime()
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\DeleteAction::make(),
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make()->label('مشاهده گزارش'),
 
             ])
             ->bulkActions([

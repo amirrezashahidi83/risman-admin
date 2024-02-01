@@ -13,6 +13,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TernaryFilter;
 
 class TransactionResource extends Resource
 {
@@ -37,11 +38,19 @@ class TransactionResource extends Resource
                 TextColumn::make('amount')->label('مبلغ')->suffix('تومان')->sortable(),
                 TextColumn::make('code')->label('کد پرداخت')->searchable()->sortable(),
                 TextColumn::make('user.name')->label('نام پرداخت کننده')->searchable(),
-                TextColumn::make('status')->label('وضعیت')->searchable(),
+                TextColumn::make('status')->label('وضعیت')->searchable()->sortable(),
                 TextColumn::make('created_at')->label('تاریخ پرداخت')->sortable()
             ])
             ->filters([
-                //
+                TernaryFilter::make('status')->label('وضعیت')
+                ->options(
+                    [
+                        0 => 'غیرفعال',
+                        1 => 'فعال'
+                    ]
+                )->attribute('user.status')
+                ->trueLabel('فعال')
+                ->falseLabel('غیرفعال'),        
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

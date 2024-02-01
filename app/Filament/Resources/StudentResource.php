@@ -100,27 +100,31 @@ class StudentResource extends Resource
                     [
                     Hidden::make('goal')->default('هدف شما')
                     ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord),
-                    Select::make('major')->label('رشته')
-                    ->options(MajorEnum::class),
-                    Select::make('grade')->label('پایه')
-                    ->options(GradeEnum::class),
-                    Select::make('status')->label('وضعیت')->options([
-                        0 => 'غیر فعال',
-                        1 => 'فعال'
-                    ])->required(),
-                    TextInput::make('school')->label('مدرسه'),
-                    Select::make('counselor_id')->label('مشاور')
-                    ->
-                    options(
-                        Counselor::all()->pluck('user.name','id')
-                        ->filter(function ($value,$key) {
-                            return isset($value) && isset($key);
-                        })
-                        ->map(function ($item,$key) {
-                            return $item.' '.Counselor::find($key)->code;
-                        })
-                    )
-                    ->searchable(),
+                    Grid::make()->schema([
+                        Select::make('major')->label('رشته')
+                        ->options(MajorEnum::class),
+                        Select::make('grade')->label('پایه')
+                        ->options(GradeEnum::class),
+                        Select::make('status')->label('وضعیت')->options([
+                            0 => 'غیر فعال',
+                            1 => 'فعال'
+                        ])->required(),
+                    ])->columns(3),
+                    Grid::make()->schema([
+                        TextInput::make('school')->label('مدرسه'),
+                        Select::make('counselor_id')->label('مشاور')
+                        ->
+                        options(
+                            Counselor::all()->pluck('user.name','id')
+                            ->filter(function ($value,$key) {
+                                return isset($value) && isset($key);
+                            })
+                            ->map(function ($item,$key) {
+                                return $item.' '.Counselor::find($key)->code;
+                            })
+                        )
+                        ->searchable(),
+                    ])->columns(2)
                     ]
                 )
             ]);
@@ -300,6 +304,28 @@ class StudentResource extends Resource
 
             ])
             ->bulkActions([
+                BulkAction::make('set_active')
+                ->label('فعال/غیر فعال کردن')
+                ->form(
+                    [
+                        Select::make('status')
+                        ->label('وضعیت')
+                        ->options(
+                            [
+                                0 => 'غیرفعال',
+                                1 => 'فعال'
+                            ]
+                        )
+                    ]
+                )
+                ->action(
+                    function($records,$data){
+                        foreach($records as $record){
+                            $record->user->status = $data['status'];
+                            $record->user->save();
+                        }
+                    }
+                ),
                 BulkAction::make('change_school')
                 ->label('تغییر مدرسه')
                 ->form(
@@ -404,7 +430,8 @@ class StudentResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\UsersRelationManager::class
+            RelationManagers\StudyPlanRelationManager::class,
+            RelationManagers\CounselorsRelationManager::class
         ];
     }
     

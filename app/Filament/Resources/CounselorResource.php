@@ -306,8 +306,10 @@ class CounselorResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\UsersRelationManager::class,
-            RelationManagers\StudentsRelationManager::class
+            RelationManagers\StudentsRelationManager::class,
+            RelationManagers\PlansRelationManager::class,
+            RelationManagers\GroupRelationManager::class
+
 
         ];
     }

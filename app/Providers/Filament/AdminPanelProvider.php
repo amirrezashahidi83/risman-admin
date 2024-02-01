@@ -21,6 +21,8 @@ use App\Livewire\StatsOverview;
 use App\Filament\Resources\UserResource\Widgets\LatestRegistredUsers;
 use Filament\Navigation\NavigationGroup;
 use App\Filament\Resources\CounselorResource;
+use App\Filament\Resources\StudyPlanResource\Widgets\LastReports;
+use App\Filament\Resources\CounselorPlanResource\Widgets\LastPlans;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -43,7 +45,9 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
             ->widgets([
                 StatsOverview::class,
-                LatestRegistredUsers::class
+                LatestRegistredUsers::class,
+                LastReports::class,
+                LastPlans::class
             ])
             ->middleware([
                 EncryptCookies::class,
