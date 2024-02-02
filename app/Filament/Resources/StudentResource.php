@@ -73,7 +73,9 @@ class StudentResource extends Resource
 
                     Grid::make('')->schema(
                         [
-                            FileUpload::make('profilePic')->label('عکس پروفایل')->disk('public'),
+                            FileUpload::make('profilePic')->label('عکس پروفایل')->disk('public')
+                            ->directory('images')->default('/logo192.png')
+                            ,
                         ]
                     )->columns(1),
                     Grid::make('')->schema(
@@ -141,10 +143,12 @@ class StudentResource extends Resource
                 TextColumn::make('user.balance')->label('موجودی'),
                 TextColumn::make('user.score')->label('امتیاز')->sortable(),
                 ImageColumn::make('user.profilePic')->label('عکس پروفایل')
-                ->state(function (Student $record) {
-                    return 'https://risman.app'.$record->user->profilePic;
-                }),
-                TextColumn::make('school')->label('مدرسه')
+                ->state(function (Counselor $record) {
+                    $suffix = isset($record->user->profilePic) && ! str_starts_with($record->user->profilePic,'/') ?
+                        '/v1/storage/' : '';
+                    return 'https://risman.app'.$suffix.( $record->user->profilePic ?? '');
+                            }),
+                        TextColumn::make('school')->label('مدرسه')
                 ->searchable()->sortable(),
                 TextColumn::make('major')->label('رشته')->sortable(),
                 TextColumn::make('grade')->label('پایه')->sortable(),
