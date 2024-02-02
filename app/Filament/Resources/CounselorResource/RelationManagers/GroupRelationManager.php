@@ -10,6 +10,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\Grid;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 
 class GroupRelationManager extends RelationManager

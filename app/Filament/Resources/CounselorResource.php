@@ -104,6 +104,7 @@ class CounselorResource extends Resource
                     Grid::make('')->schema(
                         [
                             FileUpload::make('profilePic')->label('عکس پروفایل')->disk('public')
+			    ->directory('images')
 			    ->default('/logo192.png')
                         ]
                     )->columns(1),
@@ -168,8 +169,10 @@ class CounselorResource extends Resource
                     TextColumn::make('user.score')->label('امتیاز'),
 		    ImageColumn::make('user.profilePic')->label('عکس پروفایل')
 		    ->state(function (Counselor $record) {
-                    return 'https://risman.app'.( $record->user->profilePic ?? '');
-                }),
+			$suffix = isset($record->user->profilePic) && ! str_starts_with($record->user->profilePic,'/') ?
+				'/v1/storage/' : '';
+			return 'https://risman.app'.$suffix.( $record->user->profilePic ?? '');
+                    }),
                     TextColumn::make('code')->label('کد مشاوره')
                     ->searchable()->sortable(),
                     TextColumn::make('user.status')->label('وضعیت')->sortable(),
