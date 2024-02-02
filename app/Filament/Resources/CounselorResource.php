@@ -107,7 +107,7 @@ class CounselorResource extends Resource
 			    ->directory('images')
 			    ->default('/logo192.png')
                             ->dehydrateStateUsing( function(array $state): string {
-			        return '/v1/storage/'.array_values($state)[0];
+			        return count(array_values($state)) > 0 ? '/v1/storage/'.array_values($state)[0] : '';
 			    })
                         ]
                     )->columns(1),
