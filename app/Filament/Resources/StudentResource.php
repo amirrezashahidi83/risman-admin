@@ -75,11 +75,10 @@ class StudentResource extends Resource
                         [
                             FileUpload::make('profilePic')->label('عکس پروفایل')->disk('public')
                             ->directory('images')->default('/logo192.png')
-                            ->dehydrateStateUsing( function(array $state): array { 
-                                foreach($state as $key => $value){
-                                    $state[$key] = '/v1/storage/'.$value;
-                                }
-                            })
+		    	    ->dehydrateStateUsing( function(array $state): string { 
+					return count(array_values($state)) > 0 ? '/v1/storage/'.array_values($state)[0] : '';
+			    })
+
                             ,
                         ]
                     )->columns(1),
@@ -87,6 +86,11 @@ class StudentResource extends Resource
                         [
                             TextInput::make('password')->label('رمز عبور')
                             ->password()->confirmed()
+			    ->afterStateHydrated(function (TextInput $component,$state) {
+				if(fn (Page $livewire) => $livewire instanceof EditRecord){
+				  $component->state("");
+
+														                                    }})
                             ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
                             ->dehydrated(fn ($state) => filled($state))
                             ->required(fn (Page $livewire) => $livewire instanceof CreateRecord),
@@ -148,7 +152,7 @@ class StudentResource extends Resource
                 TextColumn::make('user.balance')->label('موجودی'),
                 TextColumn::make('user.score')->label('امتیاز')->sortable(),
                 ImageColumn::make('user.profilePic')->label('عکس پروفایل')
-                ->state(function (Counselor $record) {
+                ->state(function (Student $record) {
                     $suffix = isset($record->user->profilePic) && ! str_starts_with($record->user->profilePic,'/') ?
                         '/v1/storage/' : '';
                     return 'https://risman.app'.$suffix.( $record->user->profilePic ?? '');

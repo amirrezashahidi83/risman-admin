@@ -106,6 +106,9 @@ class CounselorResource extends Resource
                             FileUpload::make('profilePic')->label('عکس پروفایل')->disk('public')
 			    ->directory('images')
 			    ->default('/logo192.png')
+                            ->dehydrateStateUsing( function(array $state): string {
+			        return count(array_values($state)) > 0 ? '/v1/storage/'.array_values($state)[0] : '';
+			    })
                         ]
                     )->columns(1),
                     Grid::make('')->schema(
