@@ -43,6 +43,7 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Forms\Components\Textarea;
 use Melipayamak\MelipayamakApi;
 use Filament\Notifications\Notification;
+use App\Models\Admin;
 
 class CounselorResource extends Resource
 {
@@ -147,10 +148,10 @@ class CounselorResource extends Resource
                     ->afterStateHydrated(function (TextInput $component,$state) {
                         $component->state(! $state ? Str::random(8) : $state);
                     })->unique(column: 'code',ignoreRecord: true),
-                    Select::make('status')->label('پیام اتوماتیک')->options([
-                        0 => 'غیر فعال',
-                        1 => 'فعال'
-                    ]),
+                    Select::make('admin')->label('ادمین')->
+                    options(
+                        Admin::whereNot('role','super')->pluck('name','id')
+                    )->nullable(),
                     Select::make('status')->label('وضعیت')->options([
                         0 => 'غیر فعال',
                         1 => 'فعال'
@@ -314,7 +315,8 @@ class CounselorResource extends Resource
         return [
             RelationManagers\StudentsRelationManager::class,
             RelationManagers\PlansRelationManager::class,
-            RelationManagers\GroupRelationManager::class
+            RelationManagers\GroupRelationManager::class,
+            RelationManagers\AdminRelationManager::class
 
 
         ];

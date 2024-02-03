@@ -33,9 +33,11 @@ use App\Filament\Resources\CounselorResource;
 
 class CounselorsRelationManager extends RelationManager
 {
-    protected static ?string $inverseRelationship  = 'counselor';
+    protected static string $relationship  = 'counselor';
 
-    protected static ?string $recordTitleAttribute = 'id';
+    protected static ?string $modelLabel = 'مشاور';
+    protected static ?string $pluralModelLabel = 'مشاوران';
+    protected static ?string $title = 'مشاور';
 
     public function form(Form $form): Form
     {

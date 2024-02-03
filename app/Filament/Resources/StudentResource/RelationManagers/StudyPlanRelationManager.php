@@ -9,42 +9,23 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\StudyPlanResource;
 
 class StudyPlanRelationManager extends RelationManager
 {
     protected static string $relationship = 'studyPlans';
+    
+    protected static ?string $modelLabel = 'گزارش';
+    protected static ?string $pluralModelLabel = 'گزارشات';
+    protected static ?string $title = 'گزارش';
 
     public function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('n')
-                    ->required()
-                    ->maxLength(255),
-            ]);
+        return StudyPlanResource::form($form);
     }
 
     public function table(Table $table): Table
     {
-        return $table
-            ->recordTitleAttribute('n')
-            ->columns([
-                Tables\Columns\TextColumn::make('n'),
-            ])
-            ->filters([
-                //
-            ])
-            ->headerActions([
-                Tables\Actions\CreateAction::make(),
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+        return StudyPlanResource::table($table);
     }
 }

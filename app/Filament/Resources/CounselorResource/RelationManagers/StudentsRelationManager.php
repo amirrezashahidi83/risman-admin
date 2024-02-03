@@ -35,7 +35,9 @@ class StudentsRelationManager extends RelationManager
 {
     protected static string $relationship = 'students';
 
-    protected static ?string $recordTitleAttribute = 'name';
+    protected static ?string $modelLabel = 'دانش آموز';
+    protected static ?string $pluralModelLabel = 'دانش آموزان';
+    protected static ?string $title = 'دانش آموز';
 
     public function form(Form $form): Form
     {

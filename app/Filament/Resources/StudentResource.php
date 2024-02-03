@@ -87,13 +87,13 @@ class StudentResource extends Resource
                             TextInput::make('password')->label('رمز عبور')
                             ->password()->confirmed()
 			    ->afterStateHydrated(function (TextInput $component,$state) {
-				if(fn (Page $livewire) => $livewire instanceof EditRecord){
+				if(fn ($livewire) => $livewire instanceof EditRecord){
 				  $component->state("");
 
 														                                    }})
                             ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
                             ->dehydrated(fn ($state) => filled($state))
-                            ->required(fn (Page $livewire) => $livewire instanceof CreateRecord),
+                            ->required(fn ($livewire) => $livewire instanceof CreateRecord),
                             TextInput::make('password_confirmation')
                             ->label('تکرار رمز عبور')
                             ->password()->dehydrated(false)
@@ -110,7 +110,7 @@ class StudentResource extends Resource
                 ->schema(
                     [
                     Hidden::make('goal')->default('هدف شما')
-                    ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord),
+                    ->dehydrated(fn ($livewire) => $livewire instanceof CreateRecord),
                     Grid::make()->schema([
                         Select::make('major')->label('رشته')
                         ->options(MajorEnum::class),
@@ -443,6 +443,9 @@ class StudentResource extends Resource
     public static function getRelations(): array
     {
         return [
+            RelationManagers\CounselorsRelationManager::class,
+            RelationManagers\StudyPlanRelationManager::class,
+            RelationManagers\AllPlansRelationManager::class
         ];
     }
     

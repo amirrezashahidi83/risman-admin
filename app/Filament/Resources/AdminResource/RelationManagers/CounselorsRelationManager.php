@@ -14,6 +14,9 @@ use App\Filament\Resources\CounselorResource;
 class CounselorsRelationManager extends RelationManager
 {
     protected static string $relationship = 'counselors';
+    protected static ?string $modelLabel = 'مشاور';
+    protected static ?string $pluralModelLabel = 'مشاوران';
+    protected static ?string $title = 'مشاور';
 
     public function form(Form $form): Form
     {

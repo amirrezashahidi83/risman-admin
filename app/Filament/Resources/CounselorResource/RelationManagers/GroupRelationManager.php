@@ -18,6 +18,10 @@ class GroupRelationManager extends RelationManager
 {
     protected static string $relationship = 'groups';
 
+    protected static ?string $modelLabel = 'گروه';
+    protected static ?string $pluralModelLabel = 'گروه ها';
+    protected static ?string $title = 'گروه';
+
     public function infolist(Infolist $infolist): Infolist
     {
         return $infolist

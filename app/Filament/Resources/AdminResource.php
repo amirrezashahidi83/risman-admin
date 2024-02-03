@@ -87,7 +87,7 @@ class AdminResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\CounselorsRelationManager::class
         ];
     }
 
