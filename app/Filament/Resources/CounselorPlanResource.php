@@ -50,9 +50,9 @@ class CounselorPlanResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('plan.counselor.user.name')->label('مشاور')
-                ->sortable(),
+                ->sortable()->searchable(),
                 TextColumn::make('student.user.name')->label('دانش آموز')
-                ->sortable(),
+                ->sortable()->searchable(),
                 TextColumn::make('created_at')->label('تاریخ ارسال')
                 ->sortable()->jalaliDateTime()
             ])
