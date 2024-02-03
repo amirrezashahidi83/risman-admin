@@ -47,5 +47,9 @@ class Counselor extends Model
         return $this->hasMany(PlanRequest::class);
     }
 
+    public function counselor(){
+        return $this->belongsTo(Admin::class);
+    }
+
 
 }

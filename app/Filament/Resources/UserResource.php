@@ -13,6 +13,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Actions\Action;
+use Filament\Tables\Columns\TextColumn;
 
 class UserResource extends Resource
 {
@@ -39,7 +40,7 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('name')->label('نام')->sortable()->searchable()
             ])
             ->filters([
                 //

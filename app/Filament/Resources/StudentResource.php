@@ -75,6 +75,11 @@ class StudentResource extends Resource
                         [
                             FileUpload::make('profilePic')->label('عکس پروفایل')->disk('public')
                             ->directory('images')->default('/logo192.png')
+                            ->dehydrateStateUsing( function(array $state): array { 
+                                foreach($state as $key => $value){
+                                    $state[$key] = '/v1/storage/'.$value;
+                                }
+                            })
                             ,
                         ]
                     )->columns(1),
@@ -147,7 +152,7 @@ class StudentResource extends Resource
                     $suffix = isset($record->user->profilePic) && ! str_starts_with($record->user->profilePic,'/') ?
                         '/v1/storage/' : '';
                     return 'https://risman.app'.$suffix.( $record->user->profilePic ?? '');
-                            }),
+                }),
                         TextColumn::make('school')->label('مدرسه')
                 ->searchable()->sortable(),
                 TextColumn::make('major')->label('رشته')->sortable(),
