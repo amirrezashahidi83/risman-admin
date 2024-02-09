@@ -30,7 +30,7 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->id('admin')
-            ->path('admin')
+            ->path('/')
     	    ->login()
     	    ->brandLogo(asset('/risman_logo.png'))
             ->colors([
