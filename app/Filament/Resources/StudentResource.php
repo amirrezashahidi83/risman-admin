@@ -45,8 +45,10 @@ use App\Filament\Resources\UserResource;
 use Filament\Forms\Components\Textarea;
 use Melipayamak\MelipayamakApi;
 use Filament\Notifications\Notification;
+use Filament\Tables\Grouping\Group;
 use DB;
 use Auth;
+use App\Models\Enums\AdminRoleEnum;
 class StudentResource extends Resource
 {
     protected static ?string $model = Student::class;
@@ -80,8 +82,8 @@ class StudentResource extends Resource
 					return count(array_values($state)) > 0 ? '/v1/storage/'.array_values($state)[0] : '';
 			    })
                 ->dehydrated(
-                    function($livewire){
-                        return count($livewire->data['user']['profilePic']) != 0;
+                    function($get){
+                        return count($get('profilePic')) != 0;
                     }
                 ),
                         ]
@@ -128,13 +130,24 @@ class StudentResource extends Resource
                         Select::make('counselor_id')->label('مشاور')
                         ->
                         options(
+			    auth()->user()->role->value == 'super' ?
                             Counselor::all()->pluck('user.name','id')
                             ->filter(function ($value,$key) {
                                 return isset($value) && isset($key);
                             })
                             ->map(function ($item,$key) {
                                 return $item.' '.Counselor::find($key)->code;
+			    })
+			    :
+			    Counselor::with('user')->where('admin_id',auth()->user()->id)->get()->pluck('user.name','id')
+                            ->filter(function ($value,$key) {
+                                return isset($value) && isset($key);
                             })
+                            ->map(function ($item,$key) {
+                                return $item.' '.Counselor::find($key)->code;
+			    })
+
+
                         )
                         ->searchable(),
                     ])->columns(2)
@@ -145,7 +158,13 @@ class StudentResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
+	return $table
+	    ->groups(
+	    	[
+	        	Group::make('counselor.user.name')
+			->label('نام مشاور')
+		]
+	    )
             ->columns([
                 TextColumn::make('user.name')->label('نام')
                 ->searchable()->sortable(),
@@ -233,12 +252,24 @@ class StudentResource extends Resource
 		SelectFilter::make('counselor_id')
 		->label('مشاور')
         ->options(
-            Counselor::all()->pluck('user.name','id')->filter(function ($value,$key) {
-                return isset($value) && isset($key);
-            })
-            ->map(function ($item,$key) {
-                return $item.' '.Counselor::find($key)->code;
-            })
+			auth()->user()->role->value == 'super' ?
+                            Counselor::all()->pluck('user.name','id')
+                            ->filter(function ($value,$key) {
+                                return isset($value) && isset($key);
+                            })
+                            ->map(function ($item,$key) {
+                                return $item.' '.Counselor::find($key)->code;
+			    })
+			    :
+			    Counselor::where('admin_id',auth()->user()->id)->get()->pluck('user.name','id')
+                            ->filter(function ($value,$key) {
+                                return isset($value) && isset($key);
+                            })
+                            ->map(function ($item,$key) {
+                                return $item.' '.Counselor::find($key)->code;
+			    })
+
+
         )
         ->multiple(),
                 Filter::make('created_at')->label('تاریخ ثبت نام')
@@ -469,10 +500,15 @@ class StudentResource extends Resource
     }    
     public static function getEloquentQuery(): Builder
     {
-	    if( Auth::user()->role->value != 'super'){
-		return parent::getEloquentQuery()->whereRelation('counselor','admin_id',Auth::user()->id);
+	$query = parent::getEloquentQuery();
+
+	    if( Auth::user()->role->value == 'counselor'){
+		$query = $query->whereRelation('counselor','admin_id',Auth::user()->id);
 	    }
-	return parent::getEloquentQuery();
+	    else if ( Auth::user()->role->value == 'school'){
+		$query = $query->whereRelation('counselor','admin_id',Auth::user()->id)->orWhereRelation('counselor.admin','role',AdminRoleEnum::COUNS);
+	    }
+	return $query; 
     }
 
 

@@ -30,6 +30,8 @@ use Filament\Forms\Components\Grid;
 use Illuminate\Support\Str;
 use Hash;
 use App\Filament\Resources\CounselorResource;
+use Filament\Tables\Actions\AttachAction;
+use Filament\Tables\Actions\DetachAction;
 
 class CounselorsRelationManager extends RelationManager
 {
@@ -46,6 +48,6 @@ class CounselorsRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
-        return CounselorResource::table($table);
+	    return CounselorResource::table($table);
     }
 }

@@ -18,6 +18,7 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Resources\Pages\Page;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Resources\Pages\EditRecord;
 use Hash;
 
 class AdminResource extends Resource
@@ -51,6 +52,11 @@ class AdminResource extends Resource
                     [
                         TextInput::make('password')->label('رمز عبور')
                         ->password()->confirmed()
+			->afterStateHydrated(function (TextInput $component,$state) {
+				if(fn ($livewire) => $livewire instanceof EditRecord){
+				  $component->state("");
+
+														                                    }})
                         ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
                         ->dehydrated(fn ($state) => filled($state))
                         ->required(fn (Page $livewire) => $livewire instanceof CreateRecord),

@@ -45,7 +45,7 @@ use Melipayamak\MelipayamakApi;
 use Filament\Notifications\Notification;
 use App\Models\Admin;
 use Auth;
-
+use Filament\Tables\Grouping\Group;
 class CounselorResource extends Resource
 {
     protected static ?string $model = Counselor::class;
@@ -113,8 +113,8 @@ class CounselorResource extends Resource
 			        return count(array_values($state)) > 0 ? '/v1/storage/'.array_values($state)[0] : '';
 			    })
                 ->dehydrated(
-                    function($livewire){
-                        return count($livewire->data['user']['profilePic']) != 0;
+                    function($get){
+                        return count($get('profilePic')) != 0;
                     }
                 ),
 
@@ -125,17 +125,17 @@ class CounselorResource extends Resource
                             TextInput::make('password')->label('رمز عبور')
                             ->password()->confirmed()
                             ->afterStateHydrated(function (TextInput $component,$state) {
-                                if(fn (Page $livewire) => $livewire instanceof EditRecord){
+                                if(fn ($livewire) => $livewire instanceof EditRecord){
                                     $component->state("");
                                 }
                             })
                             ->dehydrated(
-                                function($livewire){
-                                    return strlen($livewire->data['user']['password']) != 0;
+                                function($get){
+				return strlen($get('password')) != 0;
                                 }
                             )
                             ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
-                            ->required(fn (Page $livewire) => $livewire instanceof CreateRecord),
+                            ->required(fn ($livewire) => $livewire instanceof CreateRecord),
                             TextInput::make('password_confirmation')
                             ->label('تکرار رمز عبور')
                             ->password()->dehydrated(false)
@@ -153,14 +153,15 @@ class CounselorResource extends Resource
                 Section::make('اطلاعات مشاور')->label('')
                 ->schema([
                     Grid::make('')->schema([
-                    TextInput::make('code')->label('کد مشاوره')->disabled(fn (Page $livewire) => $livewire instanceof EditRecord)
+                    TextInput::make('code')->label('کد مشاوره')->disabled(fn ($livewire) => $livewire instanceof EditRecord)
                     ->afterStateHydrated(function (TextInput $component,$state) {
                         $component->state(! $state ? Str::random(8) : $state);
                     })->unique(column: 'code',ignoreRecord: true),
                     Select::make('admin_id')->label('ادمین')->
                     options(
                         Admin::whereNot('role','super')->pluck('name','id')
-                    )->nullable(),
+		    )->nullable()
+		    ->disabled(auth()->user()->role->value != 'super' && auth()->user()->role->value != 'school'),
                     Hidden::make('status')->default(true),
                     ])->columns(2),
                 ])
@@ -170,6 +171,9 @@ class CounselorResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+	    ->groups([
+		Group::make('admin.name')->label('نام ادمین')
+	    ])
             ->columns([
                     TextColumn::make('user.name')->label('نام')
                     ->searchable()->sortable(),
@@ -184,7 +188,8 @@ class CounselorResource extends Resource
 			return 'https://risman.app'.$suffix.( $record->user->profilePic ?? '');
                     }),
                     TextColumn::make('code')->label('کد مشاوره')
-                    ->searchable()->sortable(),
+			->searchable()->sortable(),
+			TextColumn::make('admin.name')->label('ادمین')->sortable()->searchable(),
                     TextColumn::make('user.status')->label('وضعیت')->sortable(),
                     TextColumn::make('created_at')->label('تاریخ ثبت نام')->sortable()
                     ->jalaliDateTime()
@@ -349,9 +354,14 @@ class CounselorResource extends Resource
     }
     public static function getEloquentQuery(): Builder
     {
-	    if( Auth::user()->role->value != 'super'){
-		return parent::getEloquentQuery()->where('admin_id',Auth::user()->id);
+	$query = parent::getEloquentQuery();
+	if( Auth::user()->role->value == 'counselor'){
+		$query = $query->where('admin_id',Auth::user()->id);
 	    }
-	return parent::getEloquentQuery();
+	    else if ( Auth::user()->role->value == 'school'){
+		$query = $query->where('admin_id',Auth::user()->id)->orWhereRelation('admin','role','counselor');
+	    }
+
+	return $query;
     }
 }

@@ -46,7 +46,11 @@ class StudentsRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
-        return StudentResource::table($table);
+        return StudentResource::table($table)
+		->headerActions([
+		])
+		->actions([
+		]);
     }
 
 }
