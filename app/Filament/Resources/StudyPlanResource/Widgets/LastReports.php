@@ -30,6 +30,7 @@ class LastReports extends BaseWidget
                 ->label('مشاور'),
                 TextColumn::make('created_at')
                 ->label('تاریخ ارسال')
+                ->jalaliDateTime()
                 ->since()
             ])->defaultSort('created_at', 'desc');
     }

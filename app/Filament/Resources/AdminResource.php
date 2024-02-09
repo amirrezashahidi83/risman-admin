@@ -34,12 +34,19 @@ class AdminResource extends Resource
             ->schema([
                 TextInput::make('name')->label('نام')->required(),
                 TextInput::make('username')->label('نام کاربری')->required(),
-                TextInput::make('email')->label('ایمیل')->required(),
+                TextInput::make('email')->label('ایمیل یا شماره تلفن')->required(),
                 Select::make('role')->label('نقش')->required()
-                ->options([
+                ->options(
+                    auth()->user()->role->value == 'super' ?
+                    [
                     'school' => 'موسسه',
                     'counselor' => 'سر مشاور'
-                ]),
+                    ]
+                    :
+                    [
+                        'counselor' => 'سر مشاور'
+                    ]
+                ),
                 Grid::make('')->schema(
                     [
                         TextInput::make('password')->label('رمز عبور')
@@ -65,7 +72,7 @@ class AdminResource extends Resource
                 ->searchable()->sortable(),
                 TextColumn::make('username')->label('نام کاربری')
                 ->searchable()->sortable(),
-                TextColumn::make('email')->label('ایمیل')
+                TextColumn::make('email')->label('ایمیل یا شماره تلفن')
                 ->searchable()->sortable(),
                 TextColumn::make('role')->label('نقش')
                 ->searchable()->sortable(),

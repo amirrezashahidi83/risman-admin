@@ -28,7 +28,7 @@ class LastPlans extends BaseWidget
             ->columns([
                 TextColumn::make('plan.counselor.user.name')->label('مشاور'),
                 TextColumn::make('student.user.name')->label('دانش آموز'),
-                TextColumn::make('created_at')->label('تاریخ ارسال')->since(),
+                //TextColumn::make('created_at')->label('تاریخ ارسال')->jalaliDateTime()->since(),
             ])->defaultSort('created_at', 'desc')
             ->paginated([10]);
     }

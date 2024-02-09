@@ -14,31 +14,72 @@ use App\Models\StudentPlan;
 use Carbon\Carbon;
 class StatsOverview extends BaseWidget
 {
-    protected function getStats(): array
-    {
+
+    protected function getMonthPay(){
         return [
-            Stat::make('تعداد دانش آموزان', Student::count()),
-            Stat::make('تعداد مشاوران',Counselor::count()),
             Stat::make('تعداد پرداخت این ماه', Transaction::where('status',1)
             ->whereBetween('created_at',
                 [Carbon::today()->subDays(30),Carbon::today()]
                 )
             ->count() 
             ),
-            Stat::make('تعداد درخواست های برنامه امروز', PlanRequest::whereBetween('created_at',
+
+        ];
+    }
+
+    protected function getStats(): array
+    {
+        return [
+            Stat::make('تعداد دانش آموزان', 
+                auth()->user()->role->value == 'super' ? 
+                Student::count()
+                :
+                Student::whereRelation('counselor','admin_id',auth()->user()->id)
+            ),
+            Stat::make('تعداد مشاوران',
+            auth()->user()->role->value == 'super' ? 
+                Counselor::count()
+                :
+                Counselor::where('admin_id',auth()->user()->id)
+            ),
+            Stat::make('تعداد درخواست های برنامه امروز', 
+            auth()->user()->role->value == 'super' ? 
+                PlanRequest::whereBetween('created_at',
+                    [Carbon::today()->subDays(1),Carbon::today()]
+                    )
+                ->count() 
+            :
+                PlanRequest::whereBetween('created_at',
                 [Carbon::today()->subDays(1),Carbon::today()]
                 )
-            ->count() 
+                ->whereRelation('counselor','admin_id',auth()->user()->id)
+                ->count() 
             ),
-            Stat::make('تعداد برنامه های ارسال شده امروز', StudentPlan::whereBetween('created_at',
-            [Carbon::today()->subDays(1),Carbon::today()]
-            )
-            ->count() 
+            Stat::make('تعداد برنامه های ارسال شده امروز', 
+            auth()->user()->role->value == 'super' ?
+                StudentPlan::whereBetween('created_at',
+                [Carbon::today()->subDays(1),Carbon::today()]
+                )
+                ->count() 
+            :
+                StudentPlan::whereBetween('created_at',
+                [Carbon::today()->subDays(1),Carbon::today()]
+                )
+                ->whereRelation('student.counselor','admin_id',auth()->user()->id)
+                ->count() 
             ),
-            Stat::make('تعداد گزارشات ثبت شده امروز', StudyPlan::whereBetween('created_at',
-            [Carbon::today()->subDays(1),Carbon::today()]
-            )
-            ->count() 
+            Stat::make('تعداد گزارشات ثبت شده امروز', 
+            auth()->user()->role->value == 'super' ?
+                StudyPlan::whereBetween('created_at',
+                [Carbon::today()->subDays(1),Carbon::today()]
+                )
+                ->count() 
+            :
+                StudyPlan::whereBetween('created_at',
+                [Carbon::today()->subDays(1),Carbon::today()]
+                )
+                ->whereRelation('student.counselor','admin_id',auth()->user()->id)
+                ->count() 
             ),
 
 

@@ -36,7 +36,7 @@ class LatestRegistredUsers extends BaseWidget
                 TextColumn::make('name')->label('نام'),
                 TextColumn::make('role')->label('نقش'),
                 ImageColumn::make('profilePic')->label('عکس'),
-                TextColumn::make('created_at')->label('تاریخ ثبت نام')->since(),
+               // TextColumn::make('created_at')->label('تاریخ ثبت نام')->jalaliDateTime()->since(),
             ])->defaultSort('created_at', 'desc')
             ->paginated([10]);
     }
