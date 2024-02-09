@@ -78,8 +78,11 @@ class StudentResource extends Resource
 		    	    ->dehydrateStateUsing( function(array $state): string { 
 					return count(array_values($state)) > 0 ? '/v1/storage/'.array_values($state)[0] : '';
 			    })
-
-                            ,
+                ->dehydrated(
+                    function($livewire){
+                        return count($livewire->data['user']['profilePic']) != 0;
+                    }
+                ),
                         ]
                     )->columns(1),
                     Grid::make('')->schema(
@@ -157,7 +160,7 @@ class StudentResource extends Resource
                         '/v1/storage/' : '';
                     return 'https://risman.app'.$suffix.( $record->user->profilePic ?? '');
                 }),
-                        TextColumn::make('school')->label('مدرسه')
+                TextColumn::make('school')->label('مدرسه')
                 ->searchable()->sortable(),
                 TextColumn::make('major')->label('رشته')->sortable(),
                 TextColumn::make('grade')->label('پایه')->sortable(),

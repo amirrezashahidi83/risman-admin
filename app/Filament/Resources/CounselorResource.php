@@ -110,6 +110,12 @@ class CounselorResource extends Resource
                             ->dehydrateStateUsing( function(array $state): string {
 			        return count(array_values($state)) > 0 ? '/v1/storage/'.array_values($state)[0] : '';
 			    })
+                ->dehydrated(
+                    function($livewire){
+                        return count($livewire->data['user']['profilePic']) != 0;
+                    }
+                ),
+
                         ]
                     )->columns(1),
                     Grid::make('')->schema(
