@@ -45,7 +45,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
             ->widgets([
                 StatsOverview::class,
-                LatestRegistredUsers::class,
+                //LatestRegistredUsers::class,
                 LastReports::class,
                 LastPlans::class
             ])

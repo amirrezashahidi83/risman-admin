@@ -13,14 +13,14 @@ class LastReports extends BaseWidget
 {
     public function table(Table $table): Table
     {
-        $query = StudyPlan::query();
+	$query = StudyPlan::query();
         $user = Auth::user();
         if($user->role->value != 'super'){
             $query = $query->whereRelation('student.counselor','admin_id',$user->id);
         }
         return $table
             ->heading('آخرین گزارشات')
-            ->query(
+    	    ->query(
                 $query
             )
             ->columns([

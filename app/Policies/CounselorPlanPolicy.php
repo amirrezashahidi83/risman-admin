@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Admin;
-use App\Models\CounselorPlan;
+use App\Models\StudentPlan;
 use Illuminate\Auth\Access\Response;
 
 class CounselorPlanPolicy
@@ -19,7 +19,7 @@ class CounselorPlanPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(Admin $admin, CounselorPlan $counselorPlan): bool
+    public function view(Admin $admin, StudentPlan $counselorPlan): bool
     {
         return true;
 
@@ -37,7 +37,7 @@ class CounselorPlanPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(Admin $admin, CounselorPlan $counselorPlan): bool
+    public function update(Admin $admin, StudentPlan $counselorPlan): bool
     {
         return false;
 
@@ -46,7 +46,7 @@ class CounselorPlanPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(Admin $admin, CounselorPlan $counselorPlan): bool
+    public function delete(Admin $admin, StudentPlan $counselorPlan): bool
     {
         return false;
 
@@ -55,7 +55,7 @@ class CounselorPlanPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(Admin $admin, CounselorPlan $counselorPlan): bool
+    public function restore(Admin $admin, StudentPlan $counselorPlan): bool
     {
         return true;
 

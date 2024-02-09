@@ -37,13 +37,15 @@ class StatsOverview extends BaseWidget
                 Student::count()
                 :
                 Student::whereRelation('counselor','admin_id',auth()->user()->id)
+		->count()
             ),
             Stat::make('تعداد مشاوران',
             auth()->user()->role->value == 'super' ? 
                 Counselor::count()
                 :
                 Counselor::where('admin_id',auth()->user()->id)
-            ),
+	    	->count()
+	    ),
             Stat::make('تعداد درخواست های برنامه امروز', 
             auth()->user()->role->value == 'super' ? 
                 PlanRequest::whereBetween('created_at',
@@ -77,10 +79,11 @@ class StatsOverview extends BaseWidget
                 )
                 ->count() 
             :
-                StudyPlan::whereBetween('created_at',
+	    StudyPlan::whereRelation('student.counselor','admin_id',auth()->user()->id)
+
+	    ->whereBetween('created_at',
                 [Carbon::today()->subDays(1),Carbon::today()]
                 )
-                ->whereRelation('student.counselor','admin_id',auth()->user()->id)
                 ->count() 
             ),
 

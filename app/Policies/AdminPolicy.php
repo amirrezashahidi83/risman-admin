@@ -28,7 +28,7 @@ class AdminPolicy
      */
     public function create(Admin $admin): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->role->value == 'super' || $admin->role->value == 'school';
     }
 
     /**

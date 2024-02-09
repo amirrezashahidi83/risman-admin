@@ -15,7 +15,9 @@ class LatestRegistredUsers extends BaseWidget
 {
     public function table(Table $table): Table
     {
-        
+        $query = User::query();
+        if(auth()->user()->role->value != 'super'){
+	}	
         return $table
             ->heading('آخرین ثبت نامی ها')
             ->filters([

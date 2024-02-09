@@ -83,6 +83,7 @@ class ListStudents extends ListRecords
                 $importer = new StudentsImport($newData);
                 Excel::import($importer,$data['file'],'local',\Maatwebsite\Excel\Excel::XLSX);
             })  
+	    ->hidden(auth()->user()->role->value != 'super')
 
         ];
     }

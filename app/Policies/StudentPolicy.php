@@ -29,7 +29,7 @@ class StudentPolicy
      */
     public function create(Admin $admin): bool
     {
-        return true;
+        return $admin->role->value == 'super';
     }
 
     /**
@@ -37,7 +37,7 @@ class StudentPolicy
      */
     public function update(Admin $admin, Student $student): bool
     {
-        return true;
+        return $admin->role->value == 'super';
     }
 
     /**

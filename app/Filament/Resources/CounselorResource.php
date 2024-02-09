@@ -220,6 +220,7 @@ class CounselorResource extends Resource
                 })
             ])
             ->actions([
+		Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Action::make('delete')->
                 label('حذف')

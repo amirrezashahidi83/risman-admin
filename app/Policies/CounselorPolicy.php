@@ -29,7 +29,7 @@ class CounselorPolicy
      */
     public function create(Admin $admin): bool
     {
-        return true;
+        return $admin->role->value == 'super';
     }
 
     /**
@@ -37,7 +37,7 @@ class CounselorPolicy
      */
     public function update(Admin $admin, Counselor $counselor): bool
     {
-        return true;
+        return $admin->role->value == 'super';
     }
 
     /**
@@ -45,7 +45,7 @@ class CounselorPolicy
      */
     public function delete(Admin $admin, Counselor $counselor): bool
     {
-        return true;
+        return $admin->role->value == 'super';
     }
 
     /**

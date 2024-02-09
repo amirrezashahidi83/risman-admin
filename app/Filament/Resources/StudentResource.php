@@ -264,6 +264,7 @@ class StudentResource extends Resource
             ])
             ->filtersFormColumns(3)
             ->actions([
+		Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Action::make('delete')->
                 action(function($record): void{
