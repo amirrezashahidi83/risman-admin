@@ -13,7 +13,7 @@ class TransactionPolicy
      */
     public function viewAny(Admin $admin): bool
     {
-        return $admin->role == 'super';
+        return $admin->role->value == 'super';
     }
 
     /**
@@ -21,7 +21,7 @@ class TransactionPolicy
      */
     public function view(Admin $admin, Transaction $transaction): bool
     {
-        return true;
+        return $admin->role->value == 'super';
     }
 
     /**
@@ -29,7 +29,7 @@ class TransactionPolicy
      */
     public function create(Admin $admin): bool
     {
-        return true;
+        return $admin->role->value == 'super';
     }
 
     /**
@@ -37,7 +37,7 @@ class TransactionPolicy
      */
     public function update(Admin $admin, Transaction $transaction): bool
     {
-        return true;
+        return $admin->role->value == 'super';
     }
 
     /**
@@ -45,7 +45,7 @@ class TransactionPolicy
      */
     public function delete(Admin $admin, Transaction $transaction): bool
     {
-        return true;
+        return $admin->role->value == 'super';
     }
 
     /**
@@ -53,7 +53,7 @@ class TransactionPolicy
      */
     public function restore(Admin $admin, Transaction $transaction): bool
     {
-        return true;
+        return $admin->role->value == 'super';
     }
 
     /**
@@ -61,6 +61,6 @@ class TransactionPolicy
      */
     public function forceDelete(Admin $admin, Transaction $transaction): bool
     {
-        return true;
+        return $admin->role->value == 'super';
     }
 }

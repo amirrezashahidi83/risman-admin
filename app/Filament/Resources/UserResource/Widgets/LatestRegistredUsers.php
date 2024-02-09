@@ -15,6 +15,7 @@ class LatestRegistredUsers extends BaseWidget
 {
     public function table(Table $table): Table
     {
+        
         return $table
             ->heading('آخرین ثبت نامی ها')
             ->filters([

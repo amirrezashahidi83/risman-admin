@@ -227,7 +227,8 @@ class CounselorResource extends Resource
                     $user_id = $record['user']['id'];
                     $record->delete();
                     User::where('id',$user_id)->first()->delete();
-                })->requiresConfirmation(),
+                })->requiresConfirmation()
+                ->hidden( auth()->user()->role->value != 'super'),
                 ReplicateAction::make()
                 ->form([
                     CheckboxList::make('relations')
@@ -256,7 +257,8 @@ class CounselorResource extends Resource
                         $newUser->save();
                     }
 
-                }),
+                })
+                ->hidden( auth()->user()->role->value != 'super'),
                 Action::make('sms')
                 ->label('ارسال پیامک')
                 ->form([
@@ -277,6 +279,7 @@ class CounselorResource extends Resource
                     ->send();    
 
                 })
+                ->hidden( auth()->user()->role->value != 'super')
 
             ])
             ->bulkActions([
@@ -288,7 +291,8 @@ class CounselorResource extends Resource
                         $record->delete();
                         User::where('id',$user_id)->first()->delete();
                     }
-                })->requiresConfirmation(),
+                })->requiresConfirmation()
+                ->hidden( auth()->user()->role->value != 'super'),
                 BulkAction::make('sms')
                 ->label('ارسال پیامک گروهی')
                 ->form([
@@ -312,6 +316,7 @@ class CounselorResource extends Resource
                     }
 
                 })
+                ->hidden( auth()->user()->role->value != 'super')
 
             ])
             ->paginated([10, 25, 50, 100,250, 'all']);

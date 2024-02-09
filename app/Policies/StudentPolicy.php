@@ -45,7 +45,7 @@ class StudentPolicy
      */
     public function delete(Admin $admin, Student $student): bool
     {
-        return true;
+        return $admin->role->value == 'super';
     }
 
     /**

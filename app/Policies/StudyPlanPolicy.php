@@ -29,7 +29,7 @@ class StudyPlanPolicy
      */
     public function create(Admin $admin): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -37,7 +37,7 @@ class StudyPlanPolicy
      */
     public function update(Admin $admin, StudyPlan $studyPlan): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -45,7 +45,7 @@ class StudyPlanPolicy
      */
     public function delete(Admin $admin, StudyPlan $studyPlan): bool
     {
-        return true;
+        return false;
     }
 
     /**

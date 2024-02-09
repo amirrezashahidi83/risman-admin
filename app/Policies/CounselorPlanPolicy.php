@@ -30,7 +30,7 @@ class CounselorPlanPolicy
      */
     public function create(Admin $admin): bool
     {
-        return true;
+        return false;
 
     }
 
@@ -39,7 +39,7 @@ class CounselorPlanPolicy
      */
     public function update(Admin $admin, CounselorPlan $counselorPlan): bool
     {
-        return true;
+        return false;
 
     }
 
@@ -48,7 +48,7 @@ class CounselorPlanPolicy
      */
     public function delete(Admin $admin, CounselorPlan $counselorPlan): bool
     {
-        return true;
+        return false;
 
     }
 

@@ -6,16 +6,24 @@ use Filament\Widgets\TableWidget as BaseWidget;
 use Filament\Tables\Table;
 use App\Models\StudentPlan;
 use Filament\Tables\Columns\TextColumn;
+use App\Models\Admin;
+use Auth;
 
 class LastPlans extends BaseWidget
 {
 
     public function table(Table $table): Table
     {
+        $query = StudentPlan::query();
+        $user = Auth::user();
+        if($user->role->value != 'super'){
+            $query = $query->whereRelation('plan.counselor','admin_id',$user->id);
+        }
+
         return $table
             ->heading('آخرین برنامه ها')
             ->query(
-                StudentPlan::query()
+                $query
             )
             ->columns([
                 TextColumn::make('plan.counselor.user.name')->label('مشاور'),

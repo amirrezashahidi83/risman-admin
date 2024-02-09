@@ -3,25 +3,24 @@
 namespace App\Policies;
 
 use App\Models\Admin;
-use App\Models\Lesson;
 use Illuminate\Auth\Access\Response;
 
-class LessonPolicy
+class AdminPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(Admin $admin): bool
     {
-        return $admin->role == 'super';
+        return $admin->role->value == 'super' || $admin->role->value == 'school';
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(Admin $admin, Lesson $lesson): bool
+    public function view(Admin $admin, Admin $admin2): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->role->value == 'super' || $admin->role->value == 'school';
     }
 
     /**
@@ -35,32 +34,32 @@ class LessonPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(Admin $admin, Lesson $lesson): bool
+    public function update(Admin $admin, Admin $admin2): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->role->value == 'super' || $admin->role->value == 'school';
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(Admin $admin, Lesson $lesson): bool
+    public function delete(Admin $admin, Admin $admin2): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->role->value == 'super' || $admin->role->value == 'school';
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(Admin $admin, Lesson $lesson): bool
+    public function restore(Admin $admin, Admin $admin2): bool
     {
-        return $admin->role->value == 'super';
+        return false;
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(Admin $admin, Lesson $lesson): bool
+    public function forceDelete(Admin $admin, Admin $admin2): bool
     {
-        return $admin->role->value == 'super';
+        return false;
     }
 }

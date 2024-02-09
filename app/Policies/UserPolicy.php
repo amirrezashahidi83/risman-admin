@@ -13,7 +13,7 @@ class UserPolicy
      */
     public function viewAny(Admin $admin): bool
     {
-        return true;
+        return false;
     }
 
     /**

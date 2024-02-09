@@ -270,7 +270,8 @@ class StudentResource extends Resource
                     $user_id = $record['user']['id'];
                     $record->delete();
                     $record->user->delete();
-                })->requiresConfirmation(),
+                })->requiresConfirmation()
+                ->hidden( auth()->user()->role->value != 'super'),
                 ReplicateAction::make()
                 ->form(
                     [
@@ -296,7 +297,8 @@ class StudentResource extends Resource
                     }
 
                     $replica->save();
-                }),
+                })
+                ->hidden( auth()->user()->role->value != 'super'),
                 Action::make('sms')
                     ->label('ارسال پیامک')
                     ->form([
@@ -317,6 +319,7 @@ class StudentResource extends Resource
                         ->send();    
 
                     })
+                    ->hidden( auth()->user()->role->value != 'super')
 
             ])
             ->bulkActions([
@@ -364,7 +367,8 @@ class StudentResource extends Resource
                         $record->save();
 
                     }
-                }),
+                })
+                ->hidden( auth()->user()->role->value != 'super'),
                 BulkAction::make('change_counselor')
                 ->label('تغییر مشاور')
                 ->form(
@@ -404,7 +408,8 @@ class StudentResource extends Resource
                         $record->user->save();
 
                     }
-                }),
+                })
+                ->hidden( auth()->user()->role->value != 'super'),
                 BulkAction::make('delete')->
                 label('حذف گروهی')
                 ->action(function($records): void{
@@ -413,7 +418,8 @@ class StudentResource extends Resource
                         $record->delete();
                         User::where('id',$user_id)->first()->delete();
                     }
-                })->requiresConfirmation(),
+                })->requiresConfirmation()
+                ->hidden( auth()->user()->role->value != 'super'),
                 BulkAction::make('sms')
                 ->label('ارسال پیامک گروهی')
                 ->form([
@@ -437,6 +443,7 @@ class StudentResource extends Resource
                     }
 
                 })
+                ->hidden( auth()->user()->role->value != 'super')
 ,
 
             ])
