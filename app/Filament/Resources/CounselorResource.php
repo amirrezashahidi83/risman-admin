@@ -44,6 +44,7 @@ use Filament\Forms\Components\Textarea;
 use Melipayamak\MelipayamakApi;
 use Filament\Notifications\Notification;
 use App\Models\Admin;
+use Auth;
 
 class CounselorResource extends Resource
 {
@@ -341,5 +342,11 @@ class CounselorResource extends Resource
     {
         return true;
     }
-
+    public static function getEloquentQuery(): Builder
+    {
+	    if( Auth::user()->role->value != 'super'){
+		return parent::getEloquentQuery()->where('admin_id',Auth::user()->id);
+	    }
+	return parent::getEloquentQuery();
+    }
 }

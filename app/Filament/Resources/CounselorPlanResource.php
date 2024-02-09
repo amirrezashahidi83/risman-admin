@@ -16,7 +16,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Infolists\Components\ViewEntry;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Infolist;
-
+use Auth;
 class CounselorPlanResource extends Resource
 {
     protected static ?string $model = StudentPlan::class;
@@ -85,4 +85,12 @@ class CounselorPlanResource extends Resource
             'edit' => Pages\EditCounselorPlan::route('/{record}/edit'),
         ];
     }
+    public static function getEloquentQuery(): Builder
+    {
+	    if( Auth::user()->role->value != 'super'){
+		return parent::getEloquentQuery()->whereRelation('plan.counselor','admin_id',Auth::user()->id);
+	    }
+	return parent::getEloquentQuery();
+    }
+
 }

@@ -20,7 +20,7 @@ use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\KeyValueEntry;
 use Filament\Infolists\Components\ViewEntry;
 use Filament\Infolists\Components\Grid;
-
+use Auth;
 class StudyPlanResource extends Resource
 {
     protected static ?string $model = StudyPlan::class;
@@ -94,4 +94,12 @@ class StudyPlanResource extends Resource
             'edit' => Pages\EditStudyPlan::route('/{record}/edit'),
         ];
     }    
+    public static function getEloquentQuery(): Builder
+    {
+	    if( Auth::user()->role->value != 'super'){
+		return parent::getEloquentQuery()->whereRelation('student.counselor','admin_id',Auth::user()->id);
+	    }
+	return parent::getEloquentQuery();
+    }
+
 }

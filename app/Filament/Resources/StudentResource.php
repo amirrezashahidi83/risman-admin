@@ -46,7 +46,7 @@ use Filament\Forms\Components\Textarea;
 use Melipayamak\MelipayamakApi;
 use Filament\Notifications\Notification;
 use DB;
-
+use Auth;
 class StudentResource extends Resource
 {
     protected static ?string $model = Student::class;
@@ -460,5 +460,13 @@ class StudentResource extends Resource
             'edit' => Pages\EditStudent::route('/{record}/edit'),
         ];
     }    
+    public static function getEloquentQuery(): Builder
+    {
+	    if( Auth::user()->role->value != 'super'){
+		return parent::getEloquentQuery()->whereRelation('counselor','admin_id',Auth::user()->id);
+	    }
+	return parent::getEloquentQuery();
+    }
+
 
 }
