@@ -154,7 +154,7 @@ class CounselorResource extends Resource
                     ->afterStateHydrated(function (TextInput $component,$state) {
                         $component->state(! $state ? Str::random(8) : $state);
                     })->unique(column: 'code',ignoreRecord: true),
-                    Select::make('admin')->label('ادمین')->
+                    Select::make('admin_id')->label('ادمین')->
                     options(
                         Admin::whereNot('role','super')->pluck('name','id')
                     )->nullable(),
