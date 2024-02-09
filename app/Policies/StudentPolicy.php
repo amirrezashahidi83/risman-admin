@@ -37,7 +37,7 @@ class StudentPolicy
      */
     public function update(Admin $admin, Student $student): bool
     {
-        return $admin->role->value == 'super';
+        return true;
     }
 
     /**

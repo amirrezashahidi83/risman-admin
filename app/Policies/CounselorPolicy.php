@@ -37,7 +37,7 @@ class CounselorPolicy
      */
     public function update(Admin $admin, Counselor $counselor): bool
     {
-        return $admin->role->value == 'super';
+        return true;
     }
 
     /**

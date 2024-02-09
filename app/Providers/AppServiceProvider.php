@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Illuminate\Support\Facades\Route;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -22,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
     {
 	        Livewire::setScriptRoute(function ($handle) {
 			                return Route::get('/vendor/livewire/livewire.js', $handle);
-    });
+            });
+
     }
 }

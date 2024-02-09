@@ -67,7 +67,8 @@ class StudentResource extends Resource
                         [
                             TextInput::make('name')->label('نام و نام خانوادگی')->required(),
                             TextInput::make('phoneNumber')->label('شماره تلفن')->required()
-                            ->unique(ignoreRecord: true),
+                            ->unique(ignoreRecord: true)
+                            ->disabled(auth()->user()->role->value != 'super'),
                         ]
                     )->columns(2),
 
@@ -108,6 +109,7 @@ class StudentResource extends Resource
                         0 => 'غیر فعال',
                         1 => 'فعال'
                     ])
+                    ->disabled(auth()->user()->role->value != 'super')
                 ]),
                 Section::make('')->label('اطلاعات دانش آموز')
                 ->schema(
@@ -119,11 +121,8 @@ class StudentResource extends Resource
                         ->options(MajorEnum::class),
                         Select::make('grade')->label('پایه')
                         ->options(GradeEnum::class),
-                        Select::make('status')->label('وضعیت')->options([
-                            0 => 'غیر فعال',
-                            1 => 'فعال'
-                        ])->required(),
-                    ])->columns(3),
+                        Hidden::make('status')->default(true),
+                    ])->columns(2),
                     Grid::make()->schema([
                         TextInput::make('school')->label('مدرسه'),
                         Select::make('counselor_id')->label('مشاور')

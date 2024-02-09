@@ -26,13 +26,17 @@ use App\Filament\Resources\CounselorPlanResource\Widgets\LastPlans;
 
 class AdminPanelProvider extends PanelProvider
 {
+    
+
     public function panel(Panel $panel): Panel
     {
+        
         return $panel
             ->id('admin')
             ->path('/')
     	    ->login()
-    	    ->brandLogo(asset('/risman_logo.png'))
+    	    ->brandLogo(fn () => view('logo'))
+            ->brandName('پنل ادمین')
             ->colors([
                 'primary' => "#008dcb",
             ])
@@ -75,6 +79,6 @@ class AdminPanelProvider extends PanelProvider
                 ->label('تنظیمات')
                 ->icon('heroicon-o-cog-6-tooth')
                 ->collapsed(),
-        ]);;
+        ]);
     }
 }

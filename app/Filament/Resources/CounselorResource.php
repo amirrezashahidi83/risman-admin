@@ -99,7 +99,8 @@ class CounselorResource extends Resource
                         [
                             TextInput::make('name')->label('نام و نام خانوادگی')->required(),
                             TextInput::make('phoneNumber')->label('شماره تلفن')->required()
-                            ->unique(column: 'phoneNumber',ignoreRecord: true),
+                            ->unique(column: 'phoneNumber',ignoreRecord: true)
+                            ->disabled(auth()->user()->role->value != 'super'),
                         ]
                     )->columns(2),
 
@@ -146,12 +147,13 @@ class CounselorResource extends Resource
                         0 => 'غیر فعال',
                         1 => 'فعال'
                     ])
+                    ->disabled(auth()->user()->role->value != 'super')
 
                 ]),
                 Section::make('اطلاعات مشاور')->label('')
                 ->schema([
                     Grid::make('')->schema([
-                    TextInput::make('code')->label('کد مشاوره')->readonly(fn (Page $livewire) => $livewire instanceof EditRecord)
+                    TextInput::make('code')->label('کد مشاوره')->disabled(fn (Page $livewire) => $livewire instanceof EditRecord)
                     ->afterStateHydrated(function (TextInput $component,$state) {
                         $component->state(! $state ? Str::random(8) : $state);
                     })->unique(column: 'code',ignoreRecord: true),
@@ -159,11 +161,8 @@ class CounselorResource extends Resource
                     options(
                         Admin::whereNot('role','super')->pluck('name','id')
                     )->nullable(),
-                    Select::make('status')->label('وضعیت')->options([
-                        0 => 'غیر فعال',
-                        1 => 'فعال'
-                    ]),
-                    ])->columns(3),
+                    Hidden::make('status')->default(true),
+                    ])->columns(2),
                 ])
         ]);
     }
