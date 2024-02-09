@@ -16,9 +16,16 @@ class LastPlans extends BaseWidget
     {
         $query = StudentPlan::query();
         $user = Auth::user();
-        if($user->role->value != 'super'){
-            $query = $query->whereRelation('plan.counselor','admin_id',$user->id);
+        $role = auth()->user()->role->value;
+
+        if($role == 'school'){
+            $query = StudentPlan::whereRelation('counselor','admin_id',auth()->user()->id)
+            ->orWhereRelation('counselor.admin','role','counselor');
+
+        }else if($role == 'counselor'){
+            $query = StudentPlan::whereRelation('counselor','admin_id',auth()->user()->id);
         }
+
 
         return $table
             ->heading('آخرین برنامه ها')

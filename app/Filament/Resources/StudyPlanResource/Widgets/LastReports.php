@@ -15,9 +15,16 @@ class LastReports extends BaseWidget
     {
 	$query = StudyPlan::query();
         $user = Auth::user();
-        if($user->role->value != 'super'){
-            $query = $query->whereRelation('student.counselor','admin_id',$user->id);
+        $role = auth()->user()->role->value;
+        
+        if($role == 'school'){
+            $query = StudyPlan::whereRelation('student.counselor','admin_id',auth()->user()->id)
+            ->orWhereRelation('student.counselor.admin','role','counselor');
+
+        }else if($role == 'counselor'){
+            $query = StudyPlan::whereRelation('student.counselor','admin_id',auth()->user()->id);
         }
+
         return $table
             ->heading('آخرین گزارشات')
     	    ->query(
