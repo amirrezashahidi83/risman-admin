@@ -31,22 +31,33 @@ class StatsOverview extends BaseWidget
 
     protected function getStats(): array
     {
+        $counselors_count = 0;
+        $students_count = 0;
+        $student_plans_count = 0;
+
+        $role = auth()->user()->role->value;
+        if($role == 'super'){
+            $students_count = Student::count();
+            $counselors_count = Counselor::count();
+
+        }else if($role == 'school'){
+            $students_count = Student::whereRelation('counselor','admin_id',auth()->user()->id)
+            ->orWhereRelation('counselor.admin','role','counselor');
+
+            $counselors_count = Counselor::where('admin_id',auth()->user()->id)->orWhereRelation('admin','role','counselor');
+        }else {
+            $students_count = Student::whereRelation('counselor','admin_id',auth()->user()->id);
+            $counselors_count = Counselor::where('admin_id',auth()->user()->id);
+        }
+
         return [
             Stat::make('تعداد دانش آموزان', 
-                auth()->user()->role->value == 'super' ? 
-                Student::count()
-                :
-                Student::whereRelation('counselor','admin_id',auth()->user()->id)
-		->count()
+                $students_count
             ),
             Stat::make('تعداد مشاوران',
-            auth()->user()->role->value == 'super' ? 
-                Counselor::count()
-                :
-                Counselor::where('admin_id',auth()->user()->id)
-	    	->count()
-	    ),
-            Stat::make('تعداد درخواست های برنامه امروز', 
+                $counselors_count
+            ),
+            /*Stat::make('تعداد درخواست های برنامه امروز', 
             auth()->user()->role->value == 'super' ? 
                 PlanRequest::whereBetween('created_at',
                     [Carbon::today()->subDays(1),Carbon::today()]
@@ -61,7 +72,7 @@ class StatsOverview extends BaseWidget
             ),
             Stat::make('تعداد برنامه های ارسال شده امروز', 
             auth()->user()->role->value == 'super' ?
-                StudentPlan::whereBetween('created_at',
+                StudentPlan::whereBetween('updated_at',
                 [Carbon::today()->subDays(1),Carbon::today()]
                 )
                 ->count() 
@@ -85,7 +96,7 @@ class StatsOverview extends BaseWidget
                 [Carbon::today()->subDays(1),Carbon::today()]
                 )
                 ->count() 
-            ),
+            ),*/
 
 
         ];
