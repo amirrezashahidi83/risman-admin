@@ -17,6 +17,8 @@ class StatsOverview extends BaseWidget
 
     protected function getMonthPay(){
         return [
+            Stat::make('تعداد دانش آموزان', Student::count())->hidden(),
+            Stat::make('تعداد مشاوران',Counselor::count()),
             Stat::make('تعداد پرداخت این ماه', Transaction::where('status',1)
             ->whereBetween('created_at',
                 [Carbon::today()->subDays(30),Carbon::today()]
