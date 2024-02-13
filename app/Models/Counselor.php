@@ -9,12 +9,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\User;
 use App\Models\Student;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class Counselor extends Model
 {
     use HasFactory;
     use Notifiable;
-
+    use HasRoles;
+    
     protected $table = 'counselors';
     protected $guarded = [];
 

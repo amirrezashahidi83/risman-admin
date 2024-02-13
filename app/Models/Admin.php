@@ -17,7 +17,7 @@ class Admin extends Authenticatable implements FilamentUser
     protected $guarded = [];
     
     protected $casts = [
-        'role' => AdminRoleEnum::class
+        'role' => AdminRoleEnum::class,
     ];
 
     public function canAccessPanel(\Filament\Panel $panel): bool

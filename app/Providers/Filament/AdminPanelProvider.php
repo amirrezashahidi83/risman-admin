@@ -23,7 +23,7 @@ use Filament\Navigation\NavigationGroup;
 use App\Filament\Resources\CounselorResource;
 use App\Filament\Resources\StudyPlanResource\Widgets\LastReports;
 use App\Filament\Resources\CounselorPlanResource\Widgets\LastPlans;
-
+use app\Filament\Admin\Pages\Login;
 class AdminPanelProvider extends PanelProvider
 {
     
@@ -34,7 +34,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin')
             ->path('/')
-    	    ->login()
+    	    ->login(Login::class)
     	    ->brandLogo(fn () => view('logo'))
             ->brandName('پنل ادمین')
             ->colors([
