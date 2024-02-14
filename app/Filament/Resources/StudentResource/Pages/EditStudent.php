@@ -15,12 +15,9 @@ class EditStudent extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('delete')->
-            action(function(array $data): void{
-                $user_id = $this->record['user']['id'];
-                $this->record->user->delete();
-                $this->record->delete();
-            })->requiresConfirmation(),
+            Actions\DeleteAction::make('delete')
+	    ->record($this->record->user),
+
 
 
         ];
