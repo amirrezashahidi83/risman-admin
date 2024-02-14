@@ -49,6 +49,7 @@ use Filament\Tables\Grouping\Group;
 use DB;
 use Auth;
 use App\Models\Enums\AdminRoleEnum;
+use Filament\Tables\Filters\Indicator;
 class StudentResource extends Resource
 {
     protected static ?string $model = Student::class;
@@ -221,16 +222,31 @@ class StudentResource extends Resource
         )
         ->query(function (Builder $query, array $data): Builder {
 
+            if($data['school'] == []){
+                return $query;
+            }
             return $query
             ->when(
                 $data,
                 fn (Builder $query, $data): Builder => 
                     $data['exclude'] ? 
-                    $query->whereNot('school',$data['school'])
+                    $query->whereNotIn('school',$data['school'])
                     : 
-                    $query->where('school',$data['school'])
+                    $query->whereIn('school',$data['school'])
             );
-        })->hidden(auth()->user()->role->value != 'super'),
+        })
+        ->indicateUsing(function (array $data): ?array {
+            $indicators = [];
+            if (! $data['school']) {
+                return null;
+            }
+            foreach($data['school'] as $school_name){
+                $indicators[] = 'موسسه : '.$school_name;
+            }
+
+            return $indicators;
+        })
+        ->hidden(auth()->user()->role->value != 'super'),
         SelectFilter::make('major')
         ->label('رشته')
         ->options([
@@ -249,29 +265,51 @@ class StudentResource extends Resource
             5 => 'یازدهم',
             6 => 'دوازدهم'
         ]),
-		SelectFilter::make('counselor_id')
-		->label('مشاور')
-        ->options(
-			auth()->user()->role->value == 'super' ?
-                            Counselor::all()->pluck('user.name','id')
-                            ->filter(function ($value,$key) {
-                                return isset($value) && isset($key);
-                            })
-                            ->map(function ($item,$key) {
-                                return $item.' '.Counselor::find($key)->code;
-			    })
-			    :
-			    Counselor::where('admin_id',auth()->user()->id)->get()->pluck('user.name','id')
-                            ->filter(function ($value,$key) {
-                                return isset($value) && isset($key);
-                            })
-                            ->map(function ($item,$key) {
-                                return $item.' '.Counselor::find($key)->code;
-			    })
+        Filter::make('counselor')
+        ->form([
+            Select::make('counselor_id')
+            ->label('مشاور')
+            ->options(
+                auth()->user()->role->value == 'super' ?
+                                Counselor::all()->pluck('user.name','id')
+                                ->filter(function ($value,$key) {
+                                    return isset($value) && isset($key);
+                                })
+                                ->map(function ($item,$key) {
+                                    return $item.' '.Counselor::find($key)->code;
+                    })
+                    :
+                    Counselor::where('admin_id',auth()->user()->id)->get()->pluck('user.name','id')
+                                ->filter(function ($value,$key) {
+                                    return isset($value) && isset($key);
+                                })
+                                ->map(function ($item,$key) {
+                                    return $item.' '.Counselor::find($key)->code;
+                    })
 
 
-        )
-	->attribute('counselor_id')
+            )->multiple()
+        ])
+        ->query(function (Builder $query, array $data): Builder { 
+            if($data['counselor_id'] == []){
+                return $query;
+            }
+            return $query->when(
+                $data['counselor_id'],
+                fn (Builder $query, $counselor_ids) => $query->whereIn('counselor_id',$counselor_ids)
+            );
+        })
+        ->indicateUsing(function (array $data): ?array {
+            $indicators = [];
+            if (! $data['counselor_id']) {
+                return null;
+            }
+            foreach($data['counselor_id'] as $id){
+                $indicators[] = 'مشاور : '.Counselor::find($id)->user->name;
+            }
+
+            return $indicators;
+        })
 	,
 
                 Filter::make('created_at')->label('تاریخ ثبت نام')

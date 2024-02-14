@@ -16,8 +16,8 @@ class EditStudent extends EditRecord
     {
         return [
             Action::make('delete')->
-            action(function(array $data): void{
-                $user_id = $this->record['user']['id'];
+            label('حذف')
+            ->action(function(array $data): void{
                 $this->record->user->delete();
                 $this->record->delete();
             })->requiresConfirmation(),
