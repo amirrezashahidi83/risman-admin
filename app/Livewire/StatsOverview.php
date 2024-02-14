@@ -42,12 +42,12 @@ class StatsOverview extends BaseWidget
 
         }else if($role == 'school'){
             $students_count = Student::whereRelation('counselor','admin_id',auth()->user()->id)
-            ->orWhereRelation('counselor.admin','role','counselor');
+            ->orWhereRelation('counselor.admin','role','counselor')->count();
 
-            $counselors_count = Counselor::where('admin_id',auth()->user()->id)->orWhereRelation('admin','role','counselor');
+            $counselors_count = Counselor::where('admin_id',auth()->user()->id)->orWhereRelation('admin','role','counselor')->count();
         }else {
-            $students_count = Student::whereRelation('counselor','admin_id',auth()->user()->id);
-            $counselors_count = Counselor::where('admin_id',auth()->user()->id);
+            $students_count = Student::whereRelation('counselor','admin_id',auth()->user()->id)->count();
+            $counselors_count = Counselor::where('admin_id',auth()->user()->id)->count();
         }
 
         return [

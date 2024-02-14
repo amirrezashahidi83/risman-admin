@@ -19,11 +19,11 @@ class LastPlans extends BaseWidget
         $role = auth()->user()->role->value;
 
         if($role == 'school'){
-            $query = StudentPlan::whereRelation('counselor','admin_id',auth()->user()->id)
-            ->orWhereRelation('counselor.admin','role','counselor');
+            $query = StudentPlan::whereRelation('plan.counselor','admin_id',auth()->user()->id)
+            ->orWhereRelation('plan.counselor.admin','role','counselor');
 
         }else if($role == 'counselor'){
-            $query = StudentPlan::whereRelation('counselor','admin_id',auth()->user()->id);
+            $query = StudentPlan::whereRelation('plan.counselor','admin_id',auth()->user()->id);
         }
 
 

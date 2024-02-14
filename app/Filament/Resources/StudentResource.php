@@ -230,7 +230,7 @@ class StudentResource extends Resource
                     : 
                     $query->where('school',$data['school'])
             );
-        }),
+        })->hidden(auth()->user()->role->value != 'super'),
         SelectFilter::make('major')
         ->label('رشته')
         ->options([
@@ -271,7 +271,9 @@ class StudentResource extends Resource
 
 
         )
-        ->multiple(),
+	->attribute('counselor_id')
+	,
+
                 Filter::make('created_at')->label('تاریخ ثبت نام')
                 ->form([
                     Section::make()->label('ثبت نام')->schema([
