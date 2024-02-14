@@ -34,7 +34,6 @@ return [
     | of the disks defined in the `config/filesystems.php`.
     |
     */
-
     'default_filesystem_disk' => env('FILAMENT_FILESYSTEM_DISK', 'public'),
 
 ];
