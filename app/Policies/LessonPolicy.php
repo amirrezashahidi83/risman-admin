@@ -13,7 +13,7 @@ class LessonPolicy
      */
     public function viewAny(Admin $admin): bool
     {
-        return $admin->role == 'super';
+        return $admin->hasRole('super_admin');
     }
 
     /**
@@ -21,7 +21,7 @@ class LessonPolicy
      */
     public function view(Admin $admin, Lesson $lesson): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->hasRole('super_admin');
     }
 
     /**
@@ -29,7 +29,7 @@ class LessonPolicy
      */
     public function create(Admin $admin): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->hasRole('super_admin');
     }
 
     /**
@@ -37,7 +37,7 @@ class LessonPolicy
      */
     public function update(Admin $admin, Lesson $lesson): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->hasRole('super_admin');
     }
 
     /**
@@ -45,7 +45,7 @@ class LessonPolicy
      */
     public function delete(Admin $admin, Lesson $lesson): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->hasRole('super_admin');
     }
 
     /**
@@ -53,7 +53,7 @@ class LessonPolicy
      */
     public function restore(Admin $admin, Lesson $lesson): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->hasRole('super_admin');
     }
 
     /**
@@ -61,6 +61,6 @@ class LessonPolicy
      */
     public function forceDelete(Admin $admin, Lesson $lesson): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->hasRole('super_admin');
     }
 }

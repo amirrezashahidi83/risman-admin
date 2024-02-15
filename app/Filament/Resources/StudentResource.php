@@ -71,7 +71,7 @@ class StudentResource extends Resource
                             TextInput::make('name')->label('نام و نام خانوادگی')->required(),
                             TextInput::make('phoneNumber')->label('شماره تلفن')->required()
                             ->unique(ignoreRecord: true)
-                            ->disabled(auth()->user()->role->value != 'super'),
+                            ->disabled(! auth()->user()->hasRole('super_admin')),
                         ]
                     )->columns(2),
 
@@ -112,7 +112,7 @@ class StudentResource extends Resource
                         0 => 'غیر فعال',
                         1 => 'فعال'
                     ])
-                    ->disabled(auth()->user()->role->value != 'super')
+                    ->disabled(! auth()->user()->hasRole('super_admin'))
                 ]),
                 Section::make('')->label('اطلاعات دانش آموز')
                 ->schema(
@@ -131,7 +131,7 @@ class StudentResource extends Resource
                         Select::make('counselor_id')->label('مشاور')
                         ->
                         options(
-			    auth()->user()->role->value == 'super' ?
+                            auth()->user()->hasRole('super_admin') ?
                             Counselor::all()->pluck('user.name','id')
                             ->filter(function ($value,$key) {
                                 return isset($value) && isset($key);
@@ -246,7 +246,7 @@ class StudentResource extends Resource
 
             return $indicators;
         })
-        ->hidden(auth()->user()->role->value != 'super'),
+        ->hidden(! auth()->user()->hasRole('super_admin')),
         SelectFilter::make('major')
         ->label('رشته')
         ->options([
@@ -270,7 +270,7 @@ class StudentResource extends Resource
             Select::make('counselor_id')
             ->label('مشاور')
             ->options(
-                auth()->user()->role->value == 'super' ?
+                auth()->user()->hasRole('super_admin') ?
                                 Counselor::all()->pluck('user.name','id')
                                 ->filter(function ($value,$key) {
                                     return isset($value) && isset($key);
@@ -342,7 +342,7 @@ class StudentResource extends Resource
                     $record->delete();
                     $record->user->delete();
                 })->requiresConfirmation()
-                ->hidden( auth()->user()->role->value != 'super'),
+                ->hidden( !auth()->user()->hasRole('super_admin')),
                 ReplicateAction::make()
                 ->form(
                     [
@@ -369,7 +369,7 @@ class StudentResource extends Resource
 
                     $replica->save();
                 })
-                ->hidden( auth()->user()->role->value != 'super'),
+                ->hidden( !auth()->user()->hasRole('super_admin')),
                 Action::make('sms')
                     ->label('ارسال پیامک')
                     ->form([
@@ -390,7 +390,7 @@ class StudentResource extends Resource
                         ->send();    
 
                     })
-                    ->hidden( auth()->user()->role->value != 'super')
+                    ->hidden( !auth()->user()->hasRole('super_admin'))
 
             ])
             ->bulkActions([
@@ -439,7 +439,7 @@ class StudentResource extends Resource
 
                     }
                 })
-                ->hidden( auth()->user()->role->value != 'super'),
+                ->hidden(! auth()->user()->hasRole('super_admin')),
                 BulkAction::make('change_counselor')
                 ->label('تغییر مشاور')
                 ->form(
@@ -480,7 +480,7 @@ class StudentResource extends Resource
 
                     }
                 })
-                ->hidden( auth()->user()->role->value != 'super'),
+                ->hidden( !auth()->user()->hasRole('super_admin')),
                 BulkAction::make('delete')->
                 label('حذف گروهی')
                 ->action(function($records): void{
@@ -490,7 +490,7 @@ class StudentResource extends Resource
                         User::where('id',$user_id)->first()->delete();
                     }
                 })->requiresConfirmation()
-                ->hidden( auth()->user()->role->value != 'super'),
+                ->hidden( !auth()->user()->hasRole('super_admin')),
                 BulkAction::make('sms')
                 ->label('ارسال پیامک گروهی')
                 ->form([
@@ -514,7 +514,7 @@ class StudentResource extends Resource
                     }
 
                 })
-                ->hidden( auth()->user()->role->value != 'super')
+                ->hidden( ! auth()->user()->hasRole('super_admin'))
 ,
 
             ])
@@ -538,18 +538,5 @@ class StudentResource extends Resource
             'edit' => Pages\EditStudent::route('/{record}/edit'),
         ];
     }    
-    public static function getEloquentQuery(): Builder
-    {
-	$query = parent::getEloquentQuery();
-
-	    if( Auth::user()->role->value == 'counselor'){
-		$query = $query->whereRelation('counselor','admin_id',Auth::user()->id);
-	    }
-	    else if ( Auth::user()->role->value == 'school'){
-		$query = $query->whereRelation('counselor','admin_id',Auth::user()->id)->orWhereRelation('counselor.admin','role',AdminRoleEnum::COUNS);
-	    }
-	return $query; 
-    }
-
 
 }

@@ -17,6 +17,10 @@ use Filament\Infolists\Components\ViewEntry;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Infolist;
 use Auth;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Grouping\Group;
+
 class CounselorPlanResource extends Resource
 {
     protected static ?string $model = StudentPlan::class;
@@ -54,10 +58,28 @@ class CounselorPlanResource extends Resource
                 TextColumn::make('student.user.name')->label('دانش آموز')
                 ->sortable()->searchable(),
                 TextColumn::make('created_at')->label('تاریخ ارسال')
-                ->sortable()->jalaliDateTime()
+                ->sortable()->jalaliDateTime()->since()
             ])
             ->filters([
-                //
+                Filter::make('created_at')->label('تاریخ ثبت نام')
+                ->form([
+                    DatePicker::make('created_from')->label('شروع')
+                    ->jalali(),
+                    DatePicker::make('created_until')->label('پایان')
+                    ->jalali(),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['created_from'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                        )
+                        ->when(
+                            $data['created_until'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                        );
+                })
+
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -67,6 +89,10 @@ class CounselorPlanResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])
+            ->groups([
+                Group::make('plan.counselor.user.name')->label('نام مشاور'),
+                Group::make('student.user.name')->label('نام دانش آموز'),
             ]);
     }
 
@@ -84,13 +110,6 @@ class CounselorPlanResource extends Resource
             'create' => Pages\CreateCounselorPlan::route('/create'),
             'edit' => Pages\EditCounselorPlan::route('/{record}/edit'),
         ];
-    }
-    public static function getEloquentQuery(): Builder
-    {
-	    if( Auth::user()->role->value != 'super'){
-		return parent::getEloquentQuery()->whereRelation('plan.counselor','admin_id',Auth::user()->id);
-	    }
-	return parent::getEloquentQuery();
     }
 
 }

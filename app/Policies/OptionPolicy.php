@@ -13,7 +13,7 @@ class OptionPolicy
      */
     public function viewAny(Admin $admin): bool
     {
-        return $admin->role == 'super';
+        return $admin->hasRole('super_admin');
     }
 
     /**
@@ -21,7 +21,7 @@ class OptionPolicy
      */
     public function view(Admin $admin, Option $option): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->hasRole('super_admin');
     }
 
     /**
@@ -29,7 +29,7 @@ class OptionPolicy
      */
     public function create(Admin $admin): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->hasRole('super_admin');
     }
 
     /**
@@ -37,7 +37,7 @@ class OptionPolicy
      */
     public function update(Admin $admin, Option $option): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->hasRole('super_admin');
     }
 
     /**
@@ -45,7 +45,7 @@ class OptionPolicy
      */
     public function delete(Admin $admin, Option $option): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->hasRole('super_admin');
     }
 
     /**
@@ -53,7 +53,7 @@ class OptionPolicy
      */
     public function restore(Admin $admin, Option $option): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->hasRole('super_admin');
     }
 
     /**
@@ -61,6 +61,6 @@ class OptionPolicy
      */
     public function forceDelete(Admin $admin, Option $option): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->hasRole('super_admin');
     }
 }

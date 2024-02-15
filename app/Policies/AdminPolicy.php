@@ -12,7 +12,7 @@ class AdminPolicy
      */
     public function viewAny(Admin $admin): bool
     {
-        return $admin->role->value == 'super' || $admin->role->value == 'school';
+        return $admin->hasRole('super_admin');
     }
 
     /**
@@ -20,7 +20,7 @@ class AdminPolicy
      */
     public function view(Admin $admin, Admin $admin2): bool
     {
-        return $admin->role->value == 'super' || $admin->role->value == 'school';
+        return $admin->hasRole('super_admin') || $admin->hasRole('school');
     }
 
     /**
@@ -28,7 +28,7 @@ class AdminPolicy
      */
     public function create(Admin $admin): bool
     {
-        return $admin->role->value == 'super' || $admin->role->value == 'school';
+        return $admin->hasRole('super_admin') || $admin->hasRole('school');
     }
 
     /**
@@ -36,7 +36,7 @@ class AdminPolicy
      */
     public function update(Admin $admin, Admin $admin2): bool
     {
-        return $admin->role->value == 'super' || $admin->role->value == 'school';
+        return $admin->hasRole('super_admin') || $admin->hasRole('school');
     }
 
     /**
@@ -44,7 +44,7 @@ class AdminPolicy
      */
     public function delete(Admin $admin, Admin $admin2): bool
     {
-        return $admin->role->value == 'super' || $admin->role->value == 'school';
+        return $admin->hasRole('super_admin') || $admin->hasRole('school');
     }
 
     /**

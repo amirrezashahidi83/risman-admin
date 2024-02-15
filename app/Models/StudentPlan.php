@@ -4,12 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class StudentPlan extends Model
 {
     use HasFactory;
 
     protected $table = 'student_plans';
+
+    protected static function booted(): void
+    {
+        if( auth()->check())
+        if(! auth()->user()->hasRole('super_admin'))
+        static::addGlobalScope('created_by_school_id', function (Builder $builder) {
+            $builder->whereRelation('plan.counselor','school_id', auth()->user()->school_id);
+        });
+    }
 
     public function plan() {
         return $this->belongsTo(CounselorPlan::class);

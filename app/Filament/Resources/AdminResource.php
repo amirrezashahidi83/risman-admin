@@ -38,10 +38,10 @@ class AdminResource extends Resource
                 TextInput::make('email')->label('ایمیل یا شماره تلفن')->required(),
                 Select::make('role')->label('نقش')->required()
                 ->options(
-                    auth()->user()->role->value == 'super' ?
+                    auth()->user()->hasRole('super_admin') ?
                     [
                     'school' => 'موسسه',
-                    'counselor' => 'سر مشاور'
+                    'supervisor' => 'سر مشاور'
                     ]
                     :
                     [
@@ -115,6 +115,6 @@ class AdminResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return Admin::whereNot('role','super');
+        return parent::getEloquentQuery();
     }
 }

@@ -35,12 +35,12 @@ class StatsOverview extends BaseWidget
         $students_count = 0;
         $student_plans_count = 0;
 
-        $role = auth()->user()->role->value;
-        if($role == 'super'){
+        $user = auth()->user();
+        if($user->hasRole('super_admin')){
             $students_count = Student::count();
             $counselors_count = Counselor::count();
 
-        }else if($role == 'school'){
+        }else if($user->hasRole('school')){
             $students_count = Student::whereRelation('counselor','admin_id',auth()->user()->id)
             ->orWhereRelation('counselor.admin','role','counselor')->count();
 

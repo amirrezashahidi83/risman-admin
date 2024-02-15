@@ -24,18 +24,24 @@ use App\Filament\Resources\CounselorResource;
 use App\Filament\Resources\StudyPlanResource\Widgets\LastReports;
 use App\Filament\Resources\CounselorPlanResource\Widgets\LastPlans;
 use app\Filament\Admin\Pages\Login;
+use App\Models\School;
+use App\Http\Middleware\ApplyTenantScopes;
+use Filament\Resources\Resource;
+
 class AdminPanelProvider extends PanelProvider
 {
     
 
+    public function boot(){
+    }
+
     public function panel(Panel $panel): Panel
     {
-        
         return $panel
             ->id('admin')
             ->path('/')
-    	    ->login(Login::class)
-    	    ->brandLogo(fn () => view('logo'))
+            ->login(Login::class)
+            ->brandLogo(fn () => view('logo'))
             ->brandName('پنل ادمین')
             ->colors([
                 'primary' => "#008dcb",
@@ -67,11 +73,11 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-	    ->spa()
+        ->spa()
         ->navigationGroups([
             NavigationGroup::make('')
-                 ->label('کاربران')
-                 ->icon('heroicon-o-user'),
+                ->label('کاربران')
+                ->icon('heroicon-o-user'),
             NavigationGroup::make()
                 ->label('عملکرد')
                 ->icon('heroicon-o-list-bullet'),

@@ -16,7 +16,7 @@ class Counselor extends Model
     use HasFactory;
     use Notifiable;
     use HasRoles;
-    
+    use Traits\Multitenantable;
     protected $table = 'counselors';
     protected $guarded = [];
 
@@ -51,6 +51,10 @@ class Counselor extends Model
 
     public function admin(){
         return $this->belongsTo(Admin::class);
+    }
+
+    public function school(){
+        return $this->belongsTo(School::class);
     }
 
 
