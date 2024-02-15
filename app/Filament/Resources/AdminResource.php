@@ -37,17 +37,7 @@ class AdminResource extends Resource
                 TextInput::make('username')->label('نام کاربری')->required(),
                 TextInput::make('email')->label('ایمیل یا شماره تلفن')->required(),
                 Select::make('role')->label('نقش')->required()
-                ->options(
-                    auth()->user()->hasRole('super_admin') ?
-                    [
-                    'school' => 'موسسه',
-                    'supervisor' => 'سر مشاور'
-                    ]
-                    :
-                    [
-                        'counselor' => 'سر مشاور'
-                    ]
-                ),
+		->relationship('roles','label',modifyQueryUsing: fn (Builder $query) => auth()->user()->hasRole('super_admin') ? $query : $query->where('name','supervisor')),
                 Grid::make('')->schema(
                     [
                         TextInput::make('password')->label('رمز عبور')

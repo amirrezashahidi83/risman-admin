@@ -26,9 +26,9 @@ class CreateRoles extends Command
      */
     public function handle()
     {
-        /*$adminRole = Role::create(['name' => 'super_admin']);
+        $adminRole = Role::create(['name' => 'super_admin']);
         $schoolRole = Role::create(['name' => 'school']);
-        $supervisorRole = Role::create(['name' => 'supervisor']);*/
+        $supervisorRole = Role::create(['name' => 'supervisor']);
         Admin::find(1)->assignRole('super_admin');
 
     }
