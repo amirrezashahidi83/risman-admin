@@ -57,6 +57,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->password;
     }
 
+    public function school(){
+        return $this->belongsTo(School::class);
+    }
+
+    
     public function schedule(){
         return $this->hasMany(Schedule::class);
     }

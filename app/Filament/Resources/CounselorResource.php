@@ -46,6 +46,8 @@ use Filament\Notifications\Notification;
 use App\Models\Admin;
 use Auth;
 use Filament\Tables\Grouping\Group;
+use App\Models\School;
+
 class CounselorResource extends Resource
 {
     protected static ?string $model = Counselor::class;
@@ -161,10 +163,16 @@ class CounselorResource extends Resource
                     Select::make('admin_id')->label('ادمین')->
                     options(
                         Admin::whereNot('role','super')->pluck('name','id')
-		    )->nullable()
-		    ->disabled(!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('school')),
+		            )->nullable()
+		            ->disabled(!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('school')),
                     Hidden::make('status')->default(true),
-                    ])->columns(2),
+                    Select::make('user.school_id')->label('موسسه')->
+                    options(
+                        School::all()
+		            )->nullable()
+		            ->disabled(!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('school')),
+            
+                    ])->columns(3),
                 ])
         ]);
     }
@@ -191,6 +199,9 @@ class CounselorResource extends Resource
                     TextColumn::make('code')->label('کد مشاوره')
 			->searchable()->sortable(),
 			TextColumn::make('admin.name')->label('ادمین')->sortable()->searchable(),
+            TextColumn::make('user.school.name')->label('موسسه')
+            ->searchable()->sortable(),
+
                     TextColumn::make('user.status')->label('وضعیت')->sortable(),
                     TextColumn::make('created_at')->label('تاریخ ثبت نام')->sortable()
                     ->jalaliDateTime()
@@ -289,6 +300,24 @@ class CounselorResource extends Resource
 
             ])
             ->bulkActions([
+                BulkAction::make('change_school')
+                ->label('تغییر مدرسه')
+                ->form(
+                    [
+                        Select::make('school')
+                        ->label('موسسه')
+                        ->options(
+                            School::all()->pluck('name','id')
+                        ),            
+                    ]
+                )
+                ->action(function($records,$data): void{
+                    foreach($records as $record){
+                        $record->user->school_id = intval($data['school']);
+                        $record->user->save();
+                    }
+                })
+                ->hidden(! auth()->user()->hasRole('super_admin')),
                 BulkAction::make('delete')->
                 label('حذف گروهی')
                 ->action(function($records): void{
@@ -298,7 +327,7 @@ class CounselorResource extends Resource
                         User::where('id',$user_id)->first()->delete();
                     }
                 })->requiresConfirmation()
-                ->hidden( auth()->user()->role->value != 'super'),
+                ->hidden( ! auth()->user()->hasRole('super_admin')),
 	 	BulkAction::make('admin')
                 ->label('change admin')
                 ->form([

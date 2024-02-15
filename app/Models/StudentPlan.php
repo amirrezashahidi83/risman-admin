@@ -17,7 +17,7 @@ class StudentPlan extends Model
         if( auth()->check())
         if(! auth()->user()->hasRole('super_admin'))
         static::addGlobalScope('created_by_school_id', function (Builder $builder) {
-            $builder->whereRelation('plan.counselor','school_id', auth()->user()->school_id);
+            $builder->whereRelation('plan.counselor.user','school_id', auth()->user()->school_id);
         });
     }
 

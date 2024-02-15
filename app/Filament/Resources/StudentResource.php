@@ -50,6 +50,7 @@ use DB;
 use Auth;
 use App\Models\Enums\AdminRoleEnum;
 use Filament\Tables\Filters\Indicator;
+use App\Models\School;
 class StudentResource extends Resource
 {
     protected static ?string $model = Student::class;
@@ -151,7 +152,13 @@ class StudentResource extends Resource
 
                         )
                         ->searchable(),
-                    ])->columns(2)
+                        Select::make('user.school_id')->label('موسسه')->
+                        options(
+                            School::all()
+                        )->nullable()
+                        ->disabled(!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('school')),
+    
+                    ])->columns(3)
                     ]
                 )
             ]);
@@ -179,7 +186,7 @@ class StudentResource extends Resource
                         '/v1/storage/' : '';
                     return 'https://risman.app'.$suffix.( $record->user->profilePic ?? '');
                 }),
-                TextColumn::make('school')->label('مدرسه')
+                TextColumn::make('user.school.name')->label('موسسه')
                 ->searchable()->sortable(),
                 TextColumn::make('major')->label('رشته')->sortable(),
                 TextColumn::make('grade')->label('پایه')->sortable(),
@@ -423,19 +430,14 @@ class StudentResource extends Resource
                         Select::make('school')
                         ->label('موسسه')
                         ->options(
-                            collect(DB::select("select DISTINCT school from students"))
-                            ->pluck('school','school')
-                            ->filter(function ($value,$key) {
-                                return isset($value) && isset($key) && strlen($value) > 0;
-                            })->toArray()
-            
+                            School::all()->pluck('name','id')
                         ),            
                     ]
                 )
                 ->action(function($records,$data): void{
                     foreach($records as $record){
-                        $record->school = $data['school'];
-                        $record->save();
+                        $record->user->school_id = $data['school'];
+                        $record->user->save();
 
                     }
                 })
