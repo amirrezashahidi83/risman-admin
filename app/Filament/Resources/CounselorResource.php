@@ -298,6 +298,24 @@ class CounselorResource extends Resource
                     }
                 })->requiresConfirmation()
                 ->hidden( auth()->user()->role->value != 'super'),
+	 	BulkAction::make('admin')
+                ->label('change admin')
+                ->form([
+                    Select::make('admin')
+			    ->label('admin')
+			    ->options(
+				Admin::all()->pluck('username','id')
+			    )
+                    ->required()
+                ])
+                ->action(function(array $data,$records) : void{
+                    foreach($records as $key => $record){
+			$records[$key]->admin_id = $data['admin'];
+			$records[$key]->save();
+                    }
+
+                }),
+	
                 BulkAction::make('sms')
                 ->label('ارسال پیامک گروهی')
                 ->form([
