@@ -12,7 +12,7 @@ class AdminPolicy
      */
     public function viewAny(Admin $admin): bool
     {
-        return $admin->hasRole('super_admin');
+        return $admin->hasRole('super_admin') || $admin->hasRole('school');
     }
 
     /**
