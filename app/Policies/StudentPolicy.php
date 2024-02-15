@@ -29,7 +29,7 @@ class StudentPolicy
      */
     public function create(Admin $admin): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->hasRole('super_admin');
     }
 
     /**
@@ -45,7 +45,7 @@ class StudentPolicy
      */
     public function delete(Admin $admin, Student $student): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->hasRole('super_admin');
     }
 
     /**

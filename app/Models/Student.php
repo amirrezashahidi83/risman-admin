@@ -15,6 +15,7 @@ use App\Models\Enums\MajorEnum;
 class Student extends Model
 {
     use HasFactory;
+    use Traits\Multitenantable;
 
     protected $casts = [
         'major' => MajorEnum::class,
@@ -25,6 +26,10 @@ class Student extends Model
 
     public function user2(){
         return $this->morphOne(User::class,'userable');
+    }
+
+    public function school(){
+        return $this->belongsTo(School::class);
     }
 
     public function user() : BelongsTo {

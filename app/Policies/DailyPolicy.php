@@ -13,7 +13,7 @@ class DailyPolicy
      */
     public function viewAny(Admin $admin): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->hasRole('super_admin');
     }
 
     /**
@@ -21,7 +21,7 @@ class DailyPolicy
      */
     public function view(Admin $admin, Daily $daily): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->hasRole('super_admin');
     }
 
     /**
@@ -29,7 +29,7 @@ class DailyPolicy
      */
     public function create(Admin $admin): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->hasRole('super_admin');
     }
 
     /**
@@ -37,7 +37,7 @@ class DailyPolicy
      */
     public function update(Admin $admin, Daily $daily): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->hasRole('super_admin');
     }
 
     /**
@@ -45,7 +45,7 @@ class DailyPolicy
      */
     public function delete(Admin $admin, Daily $daily): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->hasRole('super_admin');
     }
 
     /**
@@ -53,7 +53,7 @@ class DailyPolicy
      */
     public function restore(Admin $admin, Daily $daily): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->hasRole('super_admin');
     }
 
     /**
@@ -61,6 +61,6 @@ class DailyPolicy
      */
     public function forceDelete(Admin $admin, Daily $daily): bool
     {
-        return $admin->role->value == 'super';
+        return $admin->hasRole('super_admin');
     }
 }

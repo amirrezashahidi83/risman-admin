@@ -8,7 +8,7 @@
                 </div>
 
                 <div>
-                    ساعت مطالعه : {{ $study['study_time'] }}
+                    ساعت مطالعه : {{ floor($study['study_time'] / 60) .":" .$study['study_time'] % 60 }}
                 </div>
 
                 <div>

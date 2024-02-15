@@ -54,6 +54,7 @@ class CounselorResource extends Resource
     protected static ?string $modelLabel = 'مشاور';
     protected static ?string $pluralModelLabel = 'مشاوران';
 
+    protected static bool $isScopedToTenant = true;
     public static function getForm() : array {
         return [
             Section::make('اطلاعات عمومی')->label('')
@@ -100,7 +101,7 @@ class CounselorResource extends Resource
                             TextInput::make('name')->label('نام و نام خانوادگی')->required(),
                             TextInput::make('phoneNumber')->label('شماره تلفن')->required()
                             ->unique(column: 'phoneNumber',ignoreRecord: true)
-                            ->disabled(auth()->user()->role->value != 'super'),
+                            ->disabled(!auth()->user()->hasRole('super_admin')),
                         ]
                     )->columns(2),
 
@@ -147,7 +148,7 @@ class CounselorResource extends Resource
                         0 => 'غیر فعال',
                         1 => 'فعال'
                     ])
-                    ->disabled(auth()->user()->role->value != 'super')
+                    ->disabled(!auth()->user()->hasRole('super_admin'))
 
                 ]),
                 Section::make('اطلاعات مشاور')->label('')
@@ -161,7 +162,7 @@ class CounselorResource extends Resource
                     options(
                         Admin::whereNot('role','super')->pluck('name','id')
 		    )->nullable()
-		    ->disabled(auth()->user()->role->value != 'super' && auth()->user()->role->value != 'school'),
+		    ->disabled(!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('school')),
                     Hidden::make('status')->default(true),
                     ])->columns(2),
                 ])
@@ -233,7 +234,7 @@ class CounselorResource extends Resource
                     $record->delete();
                     User::where('id',$user_id)->first()->delete();
                 })->requiresConfirmation()
-                ->hidden( auth()->user()->role->value != 'super'),
+                ->hidden(! auth()->user()->hasRole('super_admin')),
                 ReplicateAction::make()
                 ->form([
                     CheckboxList::make('relations')
@@ -263,7 +264,7 @@ class CounselorResource extends Resource
                     }
 
                 })
-                ->hidden( auth()->user()->role->value != 'super'),
+                ->hidden( !auth()->user()->hasRole('super_admin')),
                 Action::make('sms')
                 ->label('ارسال پیامک')
                 ->form([
@@ -284,7 +285,7 @@ class CounselorResource extends Resource
                     ->send();    
 
                 })
-                ->hidden( auth()->user()->role->value != 'super')
+                ->hidden( !auth()->user()->hasRole('super_admin'))
 
             ])
             ->bulkActions([
@@ -339,7 +340,7 @@ class CounselorResource extends Resource
                     }
 
                 })
-                ->hidden( auth()->user()->role->value != 'super')
+                ->hidden( !auth()->user()->hasRole('super_admin'))
 
             ])
             ->paginated([10, 25, 50, 100,250, 'all']);
@@ -370,16 +371,10 @@ class CounselorResource extends Resource
     {
         return true;
     }
+
     public static function getEloquentQuery(): Builder
     {
-	$query = parent::getEloquentQuery();
-	if( Auth::user()->role->value == 'counselor'){
-		$query = $query->where('admin_id',Auth::user()->id);
-	    }
-	    else if ( Auth::user()->role->value == 'school'){
-		$query = $query->where('admin_id',Auth::user()->id)->orWhereRelation('admin','role','counselor');
-	    }
-
-	return $query;
+        return parent::getEloquentQuery();
     }
+
 }
