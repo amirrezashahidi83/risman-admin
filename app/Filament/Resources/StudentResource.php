@@ -113,7 +113,13 @@ class StudentResource extends Resource
                         0 => 'غیر فعال',
                         1 => 'فعال'
                     ])
-                    ->disabled(! auth()->user()->hasRole('super_admin'))
+		    ->disabled(! auth()->user()->hasRole('super_admin')),
+		    Select::make('school_id')->label('موسسه')->
+                        options(
+                            School::all()->pluck('name','id')
+                        )->nullable()
+                        ->disabled(!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('school')),
+
                 ]),
                 Section::make('')->label('اطلاعات دانش آموز')
                 ->schema(
@@ -151,13 +157,7 @@ class StudentResource extends Resource
 
 
                         )
-                        ->searchable(),
-                        Select::make('user.school_id')->label('موسسه')->
-                        options(
-                            School::all()
-                        )->nullable()
-                        ->disabled(!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('school')),
-    
+                        ->searchable(),    
                     ])->columns(3)
                     ]
                 )

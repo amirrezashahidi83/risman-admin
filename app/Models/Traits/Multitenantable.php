@@ -13,11 +13,12 @@ trait Multitenantable
         if( auth()->check())
         if(! auth()->user()->hasRole('super_admin'))
         static::addGlobalScope('created_by_school_id', function (Builder $builder) {
-            if(auth()->user()->hasRole('school')){
-                $builder->whereRelation('user','school_id', auth()->user()->school_id);
-            }
-            else if( auth()->user()->hasRole('supervisor')){
-                $builder->whereRelation('user','school_id', auth()->user()->school_id);
+		if($builder->has('user')){
+		$builder->whereRelation('user','school_id', auth()->user()->school_id);
+		}else{
+		$builder->where('school_id',auth()->user()->school_id);
+		}
+		if( auth()->user()->hasRole('supervisor')){
                 if($builder->has('counselor')){
                     $builder->whereRelation('counselor','admin_id',auth()->user()->id);
                 }else if($builder->has('admin')){
