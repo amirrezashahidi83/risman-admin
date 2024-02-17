@@ -24,6 +24,21 @@ class Student extends Model
     
     protected $guarded = [];
 
+    protected static function booted () {
+        static::creating(function ($model) {
+            $model->school_id = auth()->user()->school_id;
+        });
+
+        if( auth()->check())
+        if(! auth()->user()->hasRole('super_admin'))
+        static::addGlobalScope('created_by_school_id', function (Builder $builder) {
+            $builder->where('school_id', auth()->user()->school_id);
+            if(auth()->user()->hasRole('supervisor')){
+                $builder->whereRelation('counselor','admin_id',auth()->user()->id);
+            }
+        });
+    }
+
     public function user2(){
         return $this->morphOne(User::class,'userable');
     }

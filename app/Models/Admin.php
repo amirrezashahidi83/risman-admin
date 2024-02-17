@@ -30,6 +30,18 @@ class Admin extends Authenticatable implements FilamentUser,HasTenants
 
     public static $SUPER_ADMIN_ID = 0;
 
+    protected static function booted () {
+        static::creating(function ($model) {
+            $model->school_id = auth()->user()->school_id;
+        });
+
+        if( auth()->check())
+        if(! auth()->user()->hasRole('super_admin'))
+        static::addGlobalScope('created_by_school_id', function (Builder $builder) {
+            $builder->where('school_id', auth()->user()->school_id);
+        });
+    }
+    
     public function canAccessPanel(\Filament\Panel $panel): bool
     {
         return true;
