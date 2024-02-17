@@ -12,14 +12,6 @@ class CounselorPlan extends Model
     
     public $guarded = [];
 
-    protected static function booted(): void
-    {
-        if( auth()->check())
-        if(! auth()->user()->hasRole('super_admin'))
-        static::addGlobalScope('created_by_school_id', function (Builder $builder) {
-            $builder->whereRelation('counselor','school_id', auth()->user()->school_id);
-        });
-    }
 
     public function students(){
         return $this->hasMany(Student::class,'plan_id');

@@ -25,7 +25,6 @@ class Admin extends Authenticatable implements FilamentUser,HasTenants
     protected $table = 'admins';
 
     protected $casts = [
-        'role' => AdminRoleEnum::class,
     ];
 
     public static $SUPER_ADMIN_ID = 0;

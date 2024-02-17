@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Counselor;
 use App\Models\Enums\GradeEnum;
 use App\Models\Enums\MajorEnum;
+use Illuminate\Database\Eloquent\Builder;
 
 class Student extends Model
 {
@@ -26,13 +27,13 @@ class Student extends Model
 
     protected static function booted () {
         static::creating(function ($model) {
-            $model->school_id = auth()->user()->school_id;
+            $model->user->school_id = auth()->user()->school_id;
         });
 
         if( auth()->check())
         if(! auth()->user()->hasRole('super_admin'))
         static::addGlobalScope('created_by_school_id', function (Builder $builder) {
-            $builder->where('school_id', auth()->user()->school_id);
+            $builder->whereRelation('user','school_id', auth()->user()->school_id);
             if(auth()->user()->hasRole('supervisor')){
                 $builder->whereRelation('counselor','admin_id',auth()->user()->id);
             }
@@ -61,7 +62,7 @@ class Student extends Model
     }
 
     public function allPlans() {
-        return $this->belongsToMany(CounselorPlan::class,'student_plans','student_id','plan_id');
+        return $this->hasMany(StudentPlan::class);
     }
 
     public function requests() {

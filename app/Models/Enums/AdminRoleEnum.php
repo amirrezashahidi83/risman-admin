@@ -2,19 +2,11 @@
 namespace App\Models\Enums;
 use Filament\Support\Contracts\HasLabel;
 
-enum AdminRoleEnum : string implements HasLabel {
-    case SUPER = 'super';
-    case SCHOOL = 'school';
-    case COUNS = 'counselor';
+enum AdminRoleEnum : int  {
+    case SUPER = 1;
+    case SCHOOL = 2;
+    case COUNS = 3;
 
-    public function getLabel(): ?string{
-        return match($this){
-            AdminRoleEnum::SUPER => 'ادمین اصلی',
-            AdminRoleEnum::SCHOOL => 'مدرسه',
-            AdminRoleEnum::COUNS => 'مشاور',
-
-        };
-    }
 }
 
 ?>

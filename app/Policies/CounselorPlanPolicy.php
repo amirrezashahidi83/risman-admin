@@ -19,7 +19,7 @@ class CounselorPlanPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(Admin $admin, StudentPlan $counselorPlan): bool
+    public function view(Admin $admin, StudentPlan $StudentPlan): bool
     {
         return true;
 

@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Student;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Builder;
 
 class Counselor extends Model
 {
@@ -22,13 +23,13 @@ class Counselor extends Model
 
     protected static function booted () {
         static::creating(function ($model) {
-            $model->school_id = auth()->user()->school_id;
+            $model->user->school_id = auth()->user()->school_id;
         });
 
         if( auth()->check())
         if(! auth()->user()->hasRole('super_admin'))
         static::addGlobalScope('created_by_school_id', function (Builder $builder) {
-            $builder->where('school_id', auth()->user()->school_id);
+            $builder->whereRelation('user','school_id', auth()->user()->school_id);
             if(auth()->user()->hasRole('supervisor')){
                 $builder->where('admin_id',auth()->user()->id);
             }

@@ -329,12 +329,12 @@ class CounselorResource extends Resource
                 })->requiresConfirmation()
                 ->hidden( ! auth()->user()->hasRole('super_admin')),
 	 	BulkAction::make('admin')
-                ->label('change admin')
+                ->label('تغییر ادمین')
                 ->form([
                     Select::make('admin')
-			    ->label('admin')
+			    ->label('ادمین')
 			    ->options(
-				Admin::all()->pluck('username','id')
+				Admin::all()->pluck('name','id')
 			    )
                     ->required()
                 ])

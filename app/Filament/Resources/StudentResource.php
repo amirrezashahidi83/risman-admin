@@ -134,7 +134,7 @@ class StudentResource extends Resource
                         Hidden::make('status')->default(true),
                     ])->columns(2),
                     Grid::make()->schema([
-                        TextInput::make('school')->label('مدرسه'),
+                        Hidden::make('school')->default('school'),
                         Select::make('counselor_id')->label('مشاور')
                         ->
                         options(
