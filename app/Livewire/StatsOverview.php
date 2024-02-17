@@ -31,24 +31,8 @@ class StatsOverview extends BaseWidget
 
     protected function getStats(): array
     {
-        $counselors_count = 0;
-        $students_count = 0;
-        $student_plans_count = 0;
-
-        $user = auth()->user();
-        if($user->hasRole('super_admin')){
             $students_count = Student::count();
             $counselors_count = Counselor::count();
-
-        }else if($user->hasRole('school')){
-            $students_count = Student::whereRelation('counselor','admin_id',auth()->user()->id)
-            ->orWhereRelation('counselor.admin','role','counselor')->count();
-
-            $counselors_count = Counselor::where('admin_id',auth()->user()->id)->orWhereRelation('admin','role','counselor')->count();
-        }else {
-            $students_count = Student::whereRelation('counselor','admin_id',auth()->user()->id)->count();
-            $counselors_count = Counselor::where('admin_id',auth()->user()->id)->count();
-        }
 
         return [
             Stat::make('تعداد دانش آموزان', 
@@ -57,46 +41,24 @@ class StatsOverview extends BaseWidget
             Stat::make('تعداد مشاوران',
                 $counselors_count
             ),
-            /*Stat::make('تعداد درخواست های برنامه امروز', 
-            auth()->user()->role->value == 'super' ? 
+            Stat::make('تعداد درخواست های برنامه امروز', 
                 PlanRequest::whereBetween('created_at',
                     [Carbon::today()->subDays(1),Carbon::today()]
                     )
                 ->count() 
-            :
-                PlanRequest::whereBetween('created_at',
-                [Carbon::today()->subDays(1),Carbon::today()]
-                )
-                ->whereRelation('counselor','admin_id',auth()->user()->id)
-                ->count() 
             ),
             Stat::make('تعداد برنامه های ارسال شده امروز', 
-            auth()->user()->role->value == 'super' ?
                 StudentPlan::whereBetween('updated_at',
                 [Carbon::today()->subDays(1),Carbon::today()]
                 )
                 ->count() 
-            :
-                StudentPlan::whereBetween('created_at',
-                [Carbon::today()->subDays(1),Carbon::today()]
-                )
-                ->whereRelation('student.counselor','admin_id',auth()->user()->id)
-                ->count() 
             ),
             Stat::make('تعداد گزارشات ثبت شده امروز', 
-            auth()->user()->role->value == 'super' ?
                 StudyPlan::whereBetween('created_at',
                 [Carbon::today()->subDays(1),Carbon::today()]
                 )
                 ->count() 
-            :
-	    StudyPlan::whereRelation('student.counselor','admin_id',auth()->user()->id)
-
-	    ->whereBetween('created_at',
-                [Carbon::today()->subDays(1),Carbon::today()]
-                )
-                ->count() 
-            ),*/
+            ),
 
 
         ];

@@ -29,7 +29,7 @@ class LastPlans extends BaseWidget
         return $table
             ->heading('آخرین برنامه ها')
             ->query(
-                $query
+		    StudentPlan::query()
             )
             ->columns([
                 TextColumn::make('plan.counselor.user.name')->label('مشاور'),
