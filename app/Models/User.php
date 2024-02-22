@@ -43,7 +43,11 @@ class User extends Authenticatable implements JWTSubject
         'status' => StateEnum::class
 
     ];
-
+    public static function booted(){
+	static::created(function ($model) {
+		$model->update(['school_id' => auth()->user()->school_id]);
+        });
+    }
     public function getJWTIdentifier()
     {
         return $this->getKey();

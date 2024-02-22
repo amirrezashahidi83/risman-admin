@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Spatie\Permission\Models\Role;
 use App\Models\Admin;
+use App\Models\Student;
+
 class CreateRoles extends Command
 {
     /**
@@ -26,10 +28,13 @@ class CreateRoles extends Command
      */
     public function handle()
     {
-        $adminRole = Role::create(['name' => 'super_admin']);
+       /* $adminRole = Role::create(['name' => 'super_admin']);
         $schoolRole = Role::create(['name' => 'school']);
         $supervisorRole = Role::create(['name' => 'supervisor']);
-        Admin::find(1)->assignRole('super_admin');
+	Admin::find(1)->assignRole('super_admin');*/
+
+	    $students = Student::with('user')->whereRelation('counselor.user','school_id',2)->get();
+	    foreach($students as $student )$student->user()->update(['school_id' => 2]);
 
     }
 }

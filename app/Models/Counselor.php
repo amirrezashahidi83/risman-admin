@@ -22,9 +22,6 @@ class Counselor extends Model
     protected $guarded = [];
 
     protected static function booted () {
-        static::creating(function ($model) {
-            $model->user->school_id = auth()->user()->school_id;
-        });
 
         if( auth()->check())
         if(! auth()->user()->hasRole('super_admin'))

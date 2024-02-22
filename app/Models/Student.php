@@ -25,11 +25,7 @@ class Student extends Model
     
     protected $guarded = [];
 
-    protected static function booted () {
-        static::creating(function ($model) {
-            $model->user->school_id = auth()->user()->school_id;
-        });
-
+    protected static function booted () { 
         if( auth()->check())
         if(! auth()->user()->hasRole('super_admin'))
         static::addGlobalScope('created_by_school_id', function (Builder $builder) {
