@@ -40,7 +40,7 @@ class Admin extends Authenticatable implements FilamentUser,HasTenants
             $builder->where('school_id', auth()->user()->school_id);
         });
     }
-    
+
     public function canAccessPanel(\Filament\Panel $panel): bool
     {
         return true;

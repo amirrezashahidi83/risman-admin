@@ -9,8 +9,9 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
-        "filament/filament": "^3.1",
+        "filament/filament": "^3.2",
         "guzzlehttp/guzzle": "^7.2",
+        "jibaymcs/filament-tour": "v3.1.0.3",
         "laravel/framework": "^10.10",
         "laravel/passport": "^11.10",
         "laravel/sanctum": "^3.3",
@@ -30,6 +31,7 @@
         "laravel/sail": "^1.18",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^7.0",
+        "pestphp/pest": "^2.34",
         "phpunit/phpunit": "^10.1",
         "spatie/laravel-ignition": "^2.0"
     },

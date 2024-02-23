@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Builder;
 class Student extends Model
 {
     use HasFactory;
-    use Traits\Multitenantable;
 
     protected $casts = [
         'major' => MajorEnum::class,

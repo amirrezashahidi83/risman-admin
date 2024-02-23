@@ -27,7 +27,8 @@ use app\Filament\Admin\Pages\Login;
 use App\Models\School;
 use App\Http\Middleware\ApplyTenantScopes;
 use Filament\Resources\Resource;
-
+use JibayMcs\FilamentTour\FilamentTourPlugin;
+use App\Filament\Admin\Pages\Dashboard;
 class AdminPanelProvider extends PanelProvider
 {
     
@@ -50,7 +51,6 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
             ->pages([
-                Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
             ->widgets([
@@ -85,6 +85,8 @@ class AdminPanelProvider extends PanelProvider
                 ->label('تنظیمات')
                 ->icon('heroicon-o-cog-6-tooth')
                 ->collapsed(),
-        ]);
+        ])
+        ->plugin(FilamentTourPlugin::make());
+        FilamentTourPlugin::make()->enableCssSelector();
     }
 }

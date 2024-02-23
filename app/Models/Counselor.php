@@ -17,7 +17,6 @@ class Counselor extends Model
     use HasFactory;
     use Notifiable;
     use HasRoles;
-    use Traits\Multitenantable;
     protected $table = 'counselors';
     protected $guarded = [];
 

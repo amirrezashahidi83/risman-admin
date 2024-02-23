@@ -50,6 +50,7 @@ use App\Models\School;
 
 class CounselorResource extends Resource
 {
+
     protected static ?string $model = Counselor::class;
 
     protected static ?string $navigationGroup = 'کاربران';
@@ -57,6 +58,7 @@ class CounselorResource extends Resource
     protected static ?string $pluralModelLabel = 'مشاوران';
 
     protected static bool $isScopedToTenant = true;
+
     public static function getForm() : array {
         return [
             Section::make('اطلاعات عمومی')->label('')
@@ -150,7 +152,12 @@ class CounselorResource extends Resource
                         0 => 'غیر فعال',
                         1 => 'فعال'
                     ])
-                    ->disabled(!auth()->user()->hasRole('super_admin'))
+                    ->disabled(!auth()->user()->hasRole('super_admin')),
+                    Select::make('school_id')->label('موسسه')->
+                    options(
+                        School::all()
+		            )->nullable()
+		            ->disabled(!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('school'))
 
                 ]),
                 Section::make('اطلاعات مشاور')->label('')
@@ -165,16 +172,10 @@ class CounselorResource extends Resource
                         Admin::whereNot('role','super')->pluck('name','id')
 		            )->nullable()
 		            ->disabled(!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('school')),
-                    Hidden::make('status')->default(true),
-                    Select::make('user.school_id')->label('موسسه')->
-                    options(
-                        School::all()
-		            )->nullable()
-		            ->disabled(!auth()->user()->hasRole('super_admin') && !auth()->user()->hasRole('school')),
-            
-                    ])->columns(3),
-                ])
-        ]);
+                    Hidden::make('status')->default(true)
+                    ])->columns(2)
+                    ])
+                    ]);
     }
 
     public static function table(Table $table): Table
@@ -189,7 +190,10 @@ class CounselorResource extends Resource
                     TextColumn::make('user.phoneNumber')->label('شماره تلفن')
                     ->searchable()->sortable(),
                     TextColumn::make('user.balance')->label('موجودی'),
-                    TextColumn::make('user.score')->label('امتیاز'),
+                    TextColumn::make('user.score')->label('تعداد دانش آموز')
+                    ->state( function(Counselor $record) {
+                        return count($record->students) ;
+                    }),
 		    ImageColumn::make('user.profilePic')->label('عکس پروفایل')
 		    ->state(function (Counselor $record) {
 			$suffix = isset($record->user->profilePic) && ! str_starts_with($record->user->profilePic,'/') ?
