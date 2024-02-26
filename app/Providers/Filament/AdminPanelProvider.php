@@ -29,6 +29,7 @@ use App\Http\Middleware\ApplyTenantScopes;
 use Filament\Resources\Resource;
 use JibayMcs\FilamentTour\FilamentTourPlugin;
 use App\Filament\Admin\Pages\Dashboard;
+use App\Http\Middleware\ChangeTheme;
 class AdminPanelProvider extends PanelProvider
 {
     
@@ -69,6 +70,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                ChangeTheme::class
             ])
             ->authMiddleware([
                 Authenticate::class,
